@@ -32,6 +32,8 @@ sudo dnf install gcc meson sdl2-devel sdl2_image-devel
 
 ## Building
 ```
+git clone https://github.com/riscygeek/billig-sweeper
+cd billig-sweeper
 meson setup build
 meson compile -C build
 meson install -C build
