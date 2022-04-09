@@ -7,10 +7,11 @@ billig-sweeper [-h]
 ```
 
 ## Keybindings
+
+| Key | Actions      |
 |-----|--------------|
 |  r  | Restart game |
 |  q  | Quit         |
-|-----|--------------|
 
 # Installation
 
