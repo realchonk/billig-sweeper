@@ -232,6 +232,18 @@ init_SDL2 ()
         return false;
     }
     SDL_FreeSurface (surface);
+    
+    // Set the window icon.
+    path_surface = relative_path (MSW_ICON);
+    surface = IMG_Load (path_surface);
+    if (!surface) {
+        printf ("Failed to load icon '%s': %s\n", path_surface, SDL_GetError ());
+    }
+    free (path_surface);
+    if (surface) {
+        SDL_SetWindowIcon (window, surface);
+        SDL_FreeSurface (surface);
+    }
 
     // Set the minimum window size to a reasonable value.
     SDL_SetWindowMinimumSize (window, 100, 100);

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Billig Sweeper
+Comment=Yet another stupid Minesweeper clone
+Exec=billig-sweeper
+Icon=billig-sweeper
+Type=Application
+Categories=Games;
+
