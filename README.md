@@ -48,3 +48,4 @@ meson install -C build
 
 # TODO
 - Build an AppImage
+- Add a menu

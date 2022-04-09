@@ -161,7 +161,9 @@ relative_path (const char *p)
         abort ();
     }
     
-    snprintf (path, PATH_MAX, "%s/../%s", self, p);
+    if (snprintf (path, PATH_MAX, "%s/../%s", self, p) >= PATH_MAX) {
+        abort ();
+    }
     return path;
 }
 
@@ -464,6 +466,7 @@ main (int argc, char *argv[])
                 case SDLK_q:
                     goto quit;
                 }
+                break;
             case SDL_MOUSEBUTTONDOWN:
                 if (game_over)
                     break;
@@ -482,8 +485,16 @@ main (int argc, char *argv[])
                     }
                     break;
                 case SDL_BUTTON_RIGHT:
-                    if (t->status == TILE_NONE)
+                    switch (t->status) {
+                    case TILE_NONE:
                         t->status = TILE_MARKED;
+                        break;
+                    case TILE_MARKED:
+                        t->status = TILE_NONE;
+                        break;
+                    case TILE_CLICKED:
+                        break;
+                    }
                     break;
                 }
                 break;
