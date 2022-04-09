@@ -70,32 +70,21 @@ rrand (int min_val, int max_val)
     return min_val + (((float)rand () / (float)RAND_MAX) * (max_val - min_val + 1));
 }
 
-/*
- * Initialize the map of tiles.
- */
-static bool
-init_tiles (int w, int h, int nb)
+static void
+reset_map (int nb)
 {
-    assert (w > 0 && h > 0);
-
-    tiles = calloc (w * h, sizeof (struct tile));
-    if (!tiles) {
-        perror ("calloc()");
-        return false;
-    }
-
-    t_width = w;
-    t_height = h;
+    memset (tiles, 0, sizeof (struct tile) * t_width * t_height);
+    
     n_bombs = nb;
-    n_tiles_left = w * h - n_bombs;
+    n_tiles_left = t_width * t_height - n_bombs;
 
     // Create bombs.
     while (nb > 0) {
         struct tile *t;
         int x, y;
 
-        x = rrand (0, w - 1);
-        y = rrand (0, h - 1);
+        x = rrand (0, t_width - 1);
+        y = rrand (0, t_height - 1);
         t = get_tile (x, y);
         assert (t != NULL);
 
@@ -107,8 +96,8 @@ init_tiles (int w, int h, int nb)
     }
 
     // Count bombs and initialize tile positions.
-    for (int y = 0; y < h; ++y) {
-        for (int x = 0; x < w; ++x) {
+    for (int y = 0; y < t_height; ++y) {
+        for (int x = 0; x < t_width; ++x) {
             struct tile *t;
 
             t = get_tile (x, y);
@@ -127,6 +116,27 @@ init_tiles (int w, int h, int nb)
             t->n_bombs += tile_is_bomb (x + 1, y + 1);
         }
     }
+}
+
+/*
+ * Initialize the map of tiles.
+ */
+static bool
+init_tiles (int w, int h, int nb)
+{
+    assert (w > 0 && h > 0);
+
+    tiles = malloc (w * h * sizeof (struct tile));
+    if (!tiles) {
+        perror ("calloc()");
+        return false;
+    }
+
+    t_width = w;
+    t_height = h;
+    
+    reset_map (nb);
+    
     return true;
 }
 
@@ -404,6 +414,15 @@ main (int argc, char *argv[])
             switch (e.type) {
             case SDL_QUIT:
                 goto quit;
+            case SDL_KEYUP:
+                switch (e.key.keysym.sym) {
+                case SDLK_r:
+                    reset_map (nb);
+                    game_over = false;
+                    break;
+                case SDLK_q:
+                    goto quit;
+                }
             case SDL_MOUSEBUTTONDOWN:
                 if (game_over)
                     break;

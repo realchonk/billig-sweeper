@@ -6,6 +6,12 @@ This is a just another simple minesweeper clone.
 billig-sweeper [-h]
 ```
 
+## Keybindings
+|-----|--------------|
+|  r  | Restart game |
+|  q  | Quit         |
+|-----|--------------|
+
 # Installation
 
 ## Dependencies
