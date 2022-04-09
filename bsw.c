@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
+#include <libgen.h>
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
@@ -141,6 +143,29 @@ init_tiles (int w, int h, int nb)
 }
 
 /*
+ * Make a relative path.
+ */
+static char *
+relative_path (const char *p)
+{
+    char self [PATH_MAX];
+    if (readlink ("/proc/self/exe", self, sizeof self) < 0) {
+        perror ("readlink('/proc/self/exe')");
+        abort ();
+    }
+    dirname (self);
+    
+    char *path = malloc (PATH_MAX);
+    if (!path) {
+        perror ("malloc()");
+        abort ();
+    }
+    
+    snprintf (path, PATH_MAX, "%s/../%s", self, p);
+    return path;
+}
+
+/*
  * Initialize the SDL2 rendering backend.
  */
 static bool
@@ -148,6 +173,7 @@ init_SDL2 ()
 {
     SDL_RendererInfo renderInfo;
     SDL_Surface *surface;
+    char *path_surface;
 
     // Initialize SDL2 & SDL2_image.
     if (SDL_Init (SDL_INIT_VIDEO) != 0) {
@@ -183,15 +209,18 @@ init_SDL2 ()
     }
 
     // Load the texture sprite/atlas.
-    surface = IMG_Load (MSW_GRAPHICS_PNG);
+    path_surface = relative_path (MSW_GRAPHICS_PNG);
+    surface = IMG_Load (path_surface);
     if (!surface) {
         printf ("Failed to load '%s': %s\n", MSW_GRAPHICS_PNG, IMG_GetError ());
+        free (path_surface);
         SDL_DestroyRenderer (renderer);
         SDL_DestroyWindow (window);
         IMG_Quit ();
         SDL_Quit ();
         return false;
     }
+    free (path_surface);
     sprite = SDL_CreateTextureFromSurface (renderer, surface);
     if (!sprite) {
         printf ("Failed to create texture sprite: %s\n", SDL_GetError ());

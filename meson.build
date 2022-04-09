@@ -8,7 +8,7 @@ project (
 	]
 )
 
-datadir = get_option ('prefix') / get_option ('datadir') / meson.project_name ()
+datadir = get_option ('datadir') / meson.project_name ()
 
 # Create a 'config.h' file.
 conf = configuration_data ()
@@ -37,5 +37,5 @@ executable (
 # Install the graphics sprite.
 install_data (
 	'graphics.png',
-	install_dir: datadir,
+	install_dir: get_option ('prefix') / datadir,
 )
