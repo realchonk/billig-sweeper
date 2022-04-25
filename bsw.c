@@ -248,7 +248,7 @@ init_SDL2 ()
     }
 
     // Set the minimum window size to a reasonable value.
-    SDL_SetWindowMinimumSize (window, 100, 100);
+    SDL_SetWindowMinimumSize (window, 200, 200);
 
     // Print information about the.
     SDL_GetRendererInfo (renderer, &renderInfo);
@@ -332,12 +332,10 @@ draw_text (int idx)
  *   toffY - Y render offset for tile map
  */
 static void
-calc_tdims (int *tw, int *th, int *toffX, int *toffY)
+calc_tdims (int *tw, int *th, int *toffX, int *toffY, int ww, int wh)
 {
     const int ctoffX = 5, ctoffY = 5;
-    int ww, wh;
 
-    SDL_GetWindowSize (window, &ww, &wh);
     *tw = (ww - ctoffX * 2) / t_width;
     *th = (wh - ctoffY * 2) / t_height;
     *toffX = (ww - (*tw * t_width)) / 2;
@@ -369,12 +367,53 @@ expand_tile (struct tile *t, bool initial)
     expand_tile (get_tile (t->x + 1, t->y + 1), false);
 }
 
+static void
+draw_menu (int ww, int wh)
+{
+    SDL_Rect rect, srect, drect;
+
+    // Render the background.
+    rect.w = ww * 3 / 4;
+    rect.h = wh * 3 / 4;
+    rect.x = (ww - rect.w) / 2;
+    rect.y = (wh - rect.h) / 2;
+    SDL_SetRenderDrawColor (renderer, 192, 192, 192, 255);
+    SDL_RenderFillRect (renderer, &rect);
+    SDL_SetRenderDrawColor (renderer, 128, 128, 128, 255);
+    SDL_RenderDrawRect (renderer, &rect);
+
+    // Render the restart button.
+    srect.x = 0;
+    srect.y = 96;
+    srect.w = 73;
+    srect.h = 32;
+    drect.w = srect.w * 2;
+    drect.h = srect.h * 2;
+    drect.x = rect.x + rect.w - (drect.w) - 20;
+    drect.y = rect.y + rect.h - (drect.h) - 20;
+    SDL_RenderCopy (renderer, sprite, &srect, &drect);
+}
+
+static void
+menu_handle_event (const SDL_Event *e)
+{
+    switch (e->type) {
+    case SDL_KEYDOWN:
+        break;
+
+    case SDL_MOUSEBUTTONDOWN:
+        break;
+    }
+}
+
+
+
 int
 main (int argc, char *argv[])
 {
     useconds_t vsync_rate = 120, vsync_delay;
     useconds_t last_time;
-    bool game_over, vsync = true;
+    bool game_over, vsync = true, show_menu = false;
     int option, w = 10, h = 10, nb = 10;
 
     while ((option = getopt (argc, argv, ":hVr:s:n:")) != -1) {
@@ -447,8 +486,9 @@ main (int argc, char *argv[])
         SDL_SetWindowTitle (window, title);
 
         // Get window size and calculate tile dimensions.
-        int tw, th, toffX, toffY;
-        calc_tdims (&tw, &th, &toffX, &toffY);
+        int tw, th, toffX, toffY, ww, wh;
+        SDL_GetWindowSize (window, &ww, &wh);
+        calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
 
         // Check for events.
         SDL_Event e;
@@ -463,13 +503,24 @@ main (int argc, char *argv[])
                     reset_map (nb);
                     game_over = false;
                     break;
+                case SDLK_m:
+                    show_menu = !show_menu;
+                    break;
                 case SDLK_q:
                     goto quit;
+                default:
+                    if (show_menu)
+                        menu_handle_event (&e);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if (game_over)
                     break;
+
+                if (show_menu) {
+                    menu_handle_event (&e);
+                    break;
+                }
 
                 t = get_tile ((e.button.x - toffX) / tw,
                               (e.button.y - toffY) / th);
@@ -522,6 +573,9 @@ main (int argc, char *argv[])
                 draw_tile (t, &rect);
             }
         }
+
+        if (show_menu)
+            draw_menu (ww, wh);
 
         if (n_tiles_left == 0)
             game_over = true;
