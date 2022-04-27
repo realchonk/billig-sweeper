@@ -31,19 +31,8 @@ static SDL_Renderer *renderer;
 static SDL_Texture *sprite;
 static struct tile *tiles;
 static int t_width, t_height, n_bombs, n_tiles_left;
-static bool game_over;
+static bool game_over, show_menu;
 
-/*
- * Get the current time in microseconds.
- */
-static useconds_t
-utime (void)
-{
-    struct timespec spec;
-
-    clock_gettime (CLOCK_MONOTONIC, &spec);
-    return (spec.tv_sec * 1000000) + (spec.tv_nsec / 1000);
-}
 
 /*
  * Get a tile at position (x,y) or NULL.
@@ -399,7 +388,7 @@ draw_menu (int ww, int wh)
     SDL_RenderCopy (renderer, sprite, &srect, &drect);
 }
 
-static void
+static bool
 menu_handle_event (const SDL_Event *e)
 {
     switch (e->type) {
@@ -409,16 +398,120 @@ menu_handle_event (const SDL_Event *e)
     case SDL_MOUSEBUTTONDOWN:
         break;
     }
+    return true;
 }
 
+static bool
+handle_event (const SDL_Event *e)
+{
+    int tw, th, toffX, toffY, ww, wh;
+    struct tile *t;
 
+    SDL_GetWindowSize (window, &ww, &wh);
+    calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
 
+    switch (e->type) {
+    case SDL_QUIT:
+        return false;
+    case SDL_KEYUP:
+        switch (e->key.keysym.sym) {
+        case SDLK_r:
+            reset_map (n_bombs);
+            game_over = false;            break;
+        case SDLK_m:
+            show_menu = !show_menu;            break;
+        case SDLK_q:
+            return false;
+        default:
+            if (show_menu && !menu_handle_event (e))
+                return false;
+            break;
+        }
+        break;
+    case SDL_MOUSEBUTTONDOWN:
+        if (game_over)
+            break;
+
+        if (show_menu) {
+            if (!menu_handle_event (e))
+                return false;
+            break;
+        }
+
+        t = get_tile ((e->button.x - toffX) / tw,
+                      (e->button.y - toffY) / th);
+        if (!t)
+            break;
+        switch (e->button.button) {
+        case SDL_BUTTON_LEFT:
+            select_tile (t);
+            if (t->is_bomb) {
+                game_over = true;
+            } else {
+                expand_tile (t, true);
+            }
+            break;
+        case SDL_BUTTON_RIGHT:
+            switch (t->status) {
+            case TILE_NONE:
+                t->status = TILE_MARKED;
+                break;
+            case TILE_MARKED:
+                t->status = TILE_NONE;
+                break;
+            case TILE_CLICKED:
+                break;
+            }
+            break;
+        }
+        break;
+    }
+    return true;
+
+}
+static void
+render ()
+{
+        int tw, th, toffX, toffY, ww, wh;
+        SDL_GetWindowSize (window, &ww, &wh);
+        calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
+    // Clear the background.
+    SDL_SetRenderDrawColor (renderer, 255, 0, 255, 255);
+    SDL_RenderClear (renderer);
+
+    // Render all tiles.
+    for (int y = 0; y < t_height; ++y) {
+        for (int x = 0; x < t_width; ++x) {
+            struct tile *t;
+            SDL_Rect rect;
+
+            t = get_tile (x, y);
+            assert (t != NULL);
+
+            rect.x = toffX + (x * tw);
+            rect.y = toffY + (y * th);
+            rect.w = tw;
+            rect.h = th;
+
+            draw_tile (t, &rect);
+        }
+    }
+
+    if (show_menu)
+        draw_menu (ww, wh);
+
+    if (n_tiles_left == 0)
+        game_over = true;
+
+    if (game_over) {
+        draw_text (n_tiles_left == 0 ? 1 : 2);
+    }
+
+    SDL_RenderPresent (renderer);
+}
 int
 main (int argc, char *argv[])
 {
-    useconds_t vsync_rate = 120, vsync_delay;
-    useconds_t last_time;
-    bool vsync = true, show_menu = false;
     int option, w = 10, h = 10, nb = 10;
 
     while ((option = getopt (argc, argv, ":hVr:s:n:")) != -1) {
@@ -436,7 +529,6 @@ main (int argc, char *argv[])
                 "  -V                    Print the version.\n"
                 "  -s <width>x<height>   Specify the map size. (default: 10x10)\n"
                 "  -n <integer>          Specify how many bombs you want. (default: 10)\n"
-                "  -r <rate>             Specify the refresh rate. (default: 120)\n"
                 "\n"
                 "Report bugs to <benni@stuerz.xyz>"
             );
@@ -444,13 +536,6 @@ main (int argc, char *argv[])
         case 'V':
             printf ("%s v%s.", TITLE, MSW_VERSION);
             return 0;
-        case 'r':
-            vsync_rate = strtoul (optarg, &endp, 10);
-            if (*endp || vsync_rate < 30) {
-                printf ("Invalid refresh rate: %s\n", optarg);
-                return 1;
-            }
-            break;
         case 's':
             if (sscanf (optarg, "%dx%d", &w, &h) != 2) {
                 printf ("Invalid size: %s\n", optarg);
@@ -473,135 +558,20 @@ main (int argc, char *argv[])
         }
     }
 
-    vsync_delay = 1000000 / vsync_rate;
-
-
     // Initialization.
     srand (time (NULL));
     if (!init_tiles (w, h, nb) || !init_SDL2 ())
         return 1;
-
-    last_time = 0;
     game_over = false;
+    show_menu = false;
     while (true) {
-        // Set the window title.
-        const useconds_t cur_time = utime ();
-        char title[64];
-        snprintf (title, sizeof title, "%s | FPS: %lu", TITLE, 1000000ul / (cur_time - last_time));
-        SDL_SetWindowTitle (window, title);
-
-        // Get window size and calculate tile dimensions.
-        int tw, th, toffX, toffY, ww, wh;
-        SDL_GetWindowSize (window, &ww, &wh);
-        calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
-
         // Check for events.
         SDL_Event e;
-        if (SDL_PollEvent (&e)) {
-            struct tile *t;
-            switch (e.type) {
-            case SDL_QUIT:
-                goto quit;
-            case SDL_KEYUP:
-                switch (e.key.keysym.sym) {
-                case SDLK_r:
-                    reset_map (nb);
-                    game_over = false;
-                    break;
-                case SDLK_m:
-                    show_menu = !show_menu;
-                    break;
-                case SDLK_q:
-                    goto quit;
-                default:
-                    if (show_menu)
-                        menu_handle_event (&e);
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (game_over)
-                    break;
 
-                if (show_menu) {
-                    menu_handle_event (&e);
-                    break;
-                }
+        if (SDL_WaitEvent (&e) && !handle_event (&e))
+            goto quit;
 
-                t = get_tile ((e.button.x - toffX) / tw,
-                              (e.button.y - toffY) / th);
-                if (!t)
-                    break;
-                switch (e.button.button) {
-                case SDL_BUTTON_LEFT:
-                    select_tile (t);
-                    if (t->is_bomb) {
-                        game_over = true;
-                    } else {
-                        expand_tile (t, true);
-                    }
-                    break;
-                case SDL_BUTTON_RIGHT:
-                    switch (t->status) {
-                    case TILE_NONE:
-                        t->status = TILE_MARKED;
-                        break;
-                    case TILE_MARKED:
-                        t->status = TILE_NONE;
-                        break;
-                    case TILE_CLICKED:
-                        break;
-                    }
-                    break;
-                }
-                break;
-            }
-        }
-
-        // Clear the background.
-        SDL_SetRenderDrawColor (renderer, 255, 0, 255, 255);
-        SDL_RenderClear (renderer);
-
-        // Render all tiles.
-        for (int y = 0; y < t_height; ++y) {
-            for (int x = 0; x < t_width; ++x) {
-                struct tile *t;
-                SDL_Rect rect;
-
-                t = get_tile (x, y);
-                assert (t != NULL);
-
-                rect.x = toffX + (x * tw);
-                rect.y = toffY + (y * th);
-                rect.w = tw;
-                rect.h = th;
-
-                draw_tile (t, &rect);
-            }
-        }
-
-        if (show_menu)
-            draw_menu (ww, wh);
-
-        if (n_tiles_left == 0)
-            game_over = true;
-
-        if (game_over) {
-            draw_text (n_tiles_left == 0 ? 1 : 2);
-        }
-
-        SDL_RenderPresent (renderer);
-
-        last_time = cur_time;
-
-        if (vsync) {
-            useconds_t now, tdiff;
-
-            now = utime ();
-            tdiff = now - last_time;
-
-            if (vsync_delay > (tdiff + 100))
-                usleep (vsync_delay - tdiff - 100);
-        }
+        render ();
     }
 
 quit:
