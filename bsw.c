@@ -31,6 +31,7 @@ static SDL_Renderer *renderer;
 static SDL_Texture *sprite;
 static struct tile *tiles;
 static int t_width, t_height, n_bombs, n_tiles_left;
+static bool game_over;
 
 /*
  * Get the current time in microseconds.
@@ -297,6 +298,10 @@ draw_tile (const struct tile *t, const SDL_Rect *rect)
         }
         break;
     }
+    if (game_over && t->is_bomb && t->status != TILE_CLICKED) {
+        srect.x = 48;
+        srect.y = 16;
+    }
     srect.w = 16;
     srect.h = 16;
 
@@ -413,7 +418,7 @@ main (int argc, char *argv[])
 {
     useconds_t vsync_rate = 120, vsync_delay;
     useconds_t last_time;
-    bool game_over, vsync = true, show_menu = false;
+    bool vsync = true, show_menu = false;
     int option, w = 10, h = 10, nb = 10;
 
     while ((option = getopt (argc, argv, ":hVr:s:n:")) != -1) {
