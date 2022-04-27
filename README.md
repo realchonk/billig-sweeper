@@ -48,6 +48,11 @@ meson compile -C build
 meson install -C build
 ```
 
+Note:
+This project must be installed to work,
+if you want to just try it out,
+you should add `--prefix=$PWD/tmp` to `meson setup build`.
+
 # TODO
 - Build an AppImage
 - Add a config file
