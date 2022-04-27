@@ -7,6 +7,7 @@
 #include "util.h"
 
 #define TITLE "Billig Sweeper"
+#define GITHUB_URL "https://github.com/riscygeek/billig-sweeper"
 #define arraylen(a) (sizeof (a) / sizeof (*(a)))
 
 extern SDL_Window *window;

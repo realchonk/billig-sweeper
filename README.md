@@ -8,10 +8,12 @@ billig-sweeper [-h]
 
 ## Keybindings
 
-| Key | Actions      |
-|-----|--------------|
-|  r  | Restart game |
-|  q  | Quit         |
+| Key | Actions          |
+|-----|------------------|
+|  F1 | Open Github link |
+|  m  | Open menu        |
+|  r  | Restart game     |
+|  q  | Quit             |
 
 # Installation
 
@@ -48,4 +50,7 @@ meson install -C build
 
 # TODO
 - Build an AppImage
-- Add a menu
+- Add a config file
+    - background color
+    - keybinds
+- Add checks for valid values in the menu

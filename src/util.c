@@ -47,3 +47,11 @@ powui (unsigned base, unsigned exponent)
 
     return result;
 }
+
+void
+open_url (const char *url)
+{
+    char buffer[512];
+    snprintf (buffer, sizeof buffer, "xdg-open '%s'", url);
+    system (buffer);
+}

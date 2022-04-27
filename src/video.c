@@ -191,9 +191,13 @@ handle_event (const SDL_Event *e)
         return false;
     case SDL_KEYUP:
         switch (e->key.keysym.sym) {
+        case SDLK_F1:
+            open_url (GITHUB_URL);
+            break;
         case SDLK_r:
             reset_game ();
             break;
+        case SDLK_ESCAPE:
         case SDLK_m:
             menu.shown = !menu.shown;
             break;

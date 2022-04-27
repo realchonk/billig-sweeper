@@ -64,6 +64,8 @@ btn_addsub_bomb_on_click (struct menu_button *btn)
         if (t_height > 1)
             --t_height;
         break;
+    default:
+        abort ();
     }
     init_tiles (t_width, t_height, n_bombs);
     return true;
@@ -83,7 +85,8 @@ btn_addsub_bomb_on_move (struct menu_button *btn)
 static bool
 lbl_on_click (struct menu_button *btn)
 {
-    (void)btn;
+    if (btn->id == LBL_BOMB)
+        open_url (GITHUB_URL);
     return true;
 }
 static void

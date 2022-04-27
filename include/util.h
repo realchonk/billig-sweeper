@@ -10,4 +10,7 @@ char *relative_path (const char *path);
 // pow() for unsigned integers
 unsigned powui (unsigned base, unsigned exponent);
 
+// Opens a URL in a browser.
+void open_url (const char *url);
+
 #endif // FILE_BSW_UTIL_H
