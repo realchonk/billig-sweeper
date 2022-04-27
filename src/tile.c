@@ -141,7 +141,15 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
 void
 tile_draw (const struct tile *t, const SDL_Rect *rect)
 {
-    SDL_Rect srect;
+    SDL_Rect srect, bgrect;
+
+    srect.w = 16;
+    srect.h = 16;
+
+    bgrect.x = 0;
+    bgrect.y = 16;
+    bgrect.w = 16;
+    bgrect.h = 16;
 
     switch (t->status) {
     case TILE_NONE:
@@ -149,7 +157,7 @@ tile_draw (const struct tile *t, const SDL_Rect *rect)
         srect.y = 16;
         break;
     case TILE_MARKED:
-        srect.x = 16;
+        srect.x = 64;
         srect.y = 16;
         break;
     case TILE_CLICKED:
@@ -157,17 +165,22 @@ tile_draw (const struct tile *t, const SDL_Rect *rect)
             srect.x = 32;
             srect.y = 16;
         } else {
+            bgrect.x = 16;
+
             srect.x = t->n_bombs * 16;
             srect.y = 0;
         }
         break;
     }
+
+    // Render background tile.
+    SDL_RenderCopy (renderer, sprite, &bgrect, rect);
+
     if (game_over && t->is_bomb && t->status != TILE_CLICKED) {
         srect.x = 48;
         srect.y = 16;
     }
-    srect.w = 16;
-    srect.h = 16;
 
+    // Render actual tile.
     SDL_RenderCopy (renderer, sprite, &srect, rect);
 }

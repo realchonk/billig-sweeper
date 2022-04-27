@@ -81,7 +81,7 @@ init_SDL2 ()
     }
 
     // Set the minimum window size to a reasonable value.
-    SDL_SetWindowMinimumSize (window, 200, 200);
+    SDL_SetWindowMinimumSize (window, 400, 200);
 
     // Print information about the.
     SDL_GetRendererInfo (renderer, &renderInfo);

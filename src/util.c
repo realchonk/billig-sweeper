@@ -32,3 +32,18 @@ relative_path (const char *p)
     }
     return path;
 }
+
+unsigned
+powui (unsigned base, unsigned exponent)
+{
+    unsigned result = 1;
+
+    while (exponent > 0) {
+        if (exponent & 1)
+            result *= base;
+        base *= base;
+        exponent >>= 1;
+    }
+
+    return result;
+}

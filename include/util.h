@@ -7,4 +7,7 @@ int rrand (int min_val, int max_val);
 // Create a path relative to the executable.
 char *relative_path (const char *path);
 
+// pow() for unsigned integers
+unsigned powui (unsigned base, unsigned exponent);
+
 #endif // FILE_BSW_UTIL_H
