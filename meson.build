@@ -29,10 +29,19 @@ depends = [
 	dependency ('SDL2_image'),
 ]
 
+sources = [
+	'src/main.c',
+	'src/menu.c',
+	'src/tile.c',
+	'src/util.c',
+	'src/video.c',
+]
+
 # Define an executable.
 executable (
 	'billig-sweeper',
-	'bsw.c',
+	sources,
+	include_directories: 'include',
 	dependencies: depends,
 	install: true,
 )
