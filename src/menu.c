@@ -46,20 +46,20 @@ void
 menu_init (void)
 {
     // Init quit button
-    menu.btn_quit.trect.x = 73;
-    menu.btn_quit.trect.y = 96;
-    menu.btn_quit.trect.w = 47;
-    menu.btn_quit.trect.h = 32;
-    menu.btn_quit.on_click = &btn_quit_on_click;
-    menu.btn_quit.on_move = &btn_quit_on_move;
+    menu.buttons[BTN_QUIT].trect.x = 73;
+    menu.buttons[BTN_QUIT].trect.y = 96;
+    menu.buttons[BTN_QUIT].trect.w = 47;
+    menu.buttons[BTN_QUIT].trect.h = 32;
+    menu.buttons[BTN_QUIT].on_click = &btn_quit_on_click;
+    menu.buttons[BTN_QUIT].on_move = &btn_quit_on_move;
 
     // Init restart button
-    menu.btn_restart.trect.x = 0;
-    menu.btn_restart.trect.y = 96;
-    menu.btn_restart.trect.w = 73;
-    menu.btn_restart.trect.h = 32;
-    menu.btn_restart.on_click = &btn_restart_on_click;
-    menu.btn_restart.on_move = &btn_restart_on_move;
+    menu.buttons[BTN_RESTART].trect.x = 0;
+    menu.buttons[BTN_RESTART].trect.y = 96;
+    menu.buttons[BTN_RESTART].trect.w = 73;
+    menu.buttons[BTN_RESTART].trect.h = 32;
+    menu.buttons[BTN_RESTART].on_click = &btn_restart_on_click;
+    menu.buttons[BTN_RESTART].on_move = &btn_restart_on_move;
 
     menu.shown = false;
 }
@@ -82,8 +82,8 @@ menu_update (int ww, int wh)
     menu.rect.x = (ww - menu.rect.w) / 2;
     menu.rect.y = (wh - menu.rect.h) / 2;
 
-    button_update (&menu.btn_quit);
-    button_update (&menu.btn_restart);
+    button_update (&menu.buttons[BTN_QUIT]);
+    button_update (&menu.buttons[BTN_RESTART]);
 }
 
 void
@@ -94,20 +94,19 @@ menu_draw (void)
     SDL_SetRenderDrawColor (renderer, 128, 128, 128, 255);
     SDL_RenderDrawRect (renderer, &menu.rect);
 
-    draw_button (&menu.btn_quit);
-    draw_button (&menu.btn_restart);
+    draw_button (&menu.buttons[BTN_QUIT]);
+    draw_button (&menu.buttons[BTN_RESTART]);
 }
 bool
 menu_handle_event (const SDL_Event *e)
 {
     switch (e->type) {
     case SDL_MOUSEBUTTONDOWN: {
-        struct menu_button *buttons[2] = { &menu.btn_quit, &menu.btn_restart };
         SDL_Point p;
         p.x = e->button.x;
         p.y = e->button.y;
-        for (size_t i = 0; i < arraylen(buttons); ++i) {
-            struct menu_button *btn = buttons[i];
+        for (size_t i = 0; i < N_BUTTONS; ++i) {
+            struct menu_button *btn = &menu.buttons[i];
             if (SDL_PointInRect (&p, &btn->wrect)) {
                 return btn->on_click (btn);
             }

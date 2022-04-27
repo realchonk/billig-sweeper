@@ -12,9 +12,15 @@ struct menu_button {
     void (*on_move)(struct menu_button *);
 };
 
+enum button_id {
+    BTN_QUIT,
+    BTN_RESTART,
+
+    N_BUTTONS,
+};
+
 struct menu {
-    struct menu_button btn_quit;
-    struct menu_button btn_restart;
+    struct menu_button buttons[N_BUTTONS];
     SDL_Rect rect;
     bool shown;
 };
