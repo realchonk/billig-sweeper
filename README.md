@@ -49,8 +49,9 @@ meson install -C build
 ```
 
 Note:
+
 This project must be installed to work,
-if you want to just try it out,
+if you just want to try it out,
 you should add `--prefix=$PWD/tmp` to `meson setup build`.
 
 # TODO
