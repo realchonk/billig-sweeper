@@ -481,7 +481,7 @@ main (int argc, char *argv[])
     if (!init_tiles (w, h, nb) || !init_SDL2 ())
         return 1;
 
-    last_time = utime ();
+    last_time = 0;
     game_over = false;
     while (true) {
         // Set the window title.
