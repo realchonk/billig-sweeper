@@ -21,7 +21,7 @@
 #include "bsw.h"
 
 struct tile *tiles = NULL;
-int t_width, t_height, n_bombs, n_tiles_left;
+int t_width, t_height, n_bombs, n_selected;
 
 
 struct tile *
@@ -44,7 +44,7 @@ reset_tiles (int nb)
     memset (tiles, 0, sizeof (struct tile) * t_width * t_height);
 
     n_bombs = nb;
-    n_tiles_left = t_width * t_height - n_bombs;
+    n_selected = 0;
 
     // Create bombs.
     while (nb > 0) {
@@ -109,7 +109,8 @@ select_tile (struct tile *t)
     if (t->status == TILE_CLICKED)
         return;
     t->status = TILE_CLICKED;
-    --n_tiles_left;
+    if (!t->is_bomb)
+        ++n_selected;
 }
 
 static void

@@ -17,6 +17,11 @@
 #ifndef FILE_BSW_UTIL_H
 #define FILE_BSW_UTIL_H
 
+#define arraylen(a) (sizeof (a) / sizeof (*(a)))
+#define my_min(a,b) ((a) < (b) ? (a) : (b))
+#define my_max(a,b) ((a) > (b) ? (a) : (b))
+#define my_clamp(v,mn,mx) (my_min (mx, my_max (v, mn)))
+
 // Generate a random number between `min_val` and `max_val`.
 int rrand (int min_val, int max_val);
 

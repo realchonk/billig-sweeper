@@ -19,6 +19,8 @@
 #include "config.h"
 #include "bsw.h"
 
+bool shift_pressed = false;
+
 bool
 init_SDL2 ()
 {
@@ -185,7 +187,7 @@ render (void)
     }
 
     if (game_over)
-        draw_text (n_tiles_left == 0 ? 1 : 2, ww, wh);
+        draw_text (all_selected () ? 1 : 2, ww, wh);
 
     if (menu.shown)
         menu_draw ();
@@ -219,6 +221,9 @@ handle_event (const SDL_Event *e)
             break;
         case SDLK_q:
             return false;
+        case SDLK_LSHIFT:
+            shift_pressed = e->key.state;
+            break;
         default:
             if (menu.shown && !menu_handle_event (e))
                 return false;
@@ -248,7 +253,7 @@ handle_event (const SDL_Event *e)
     if (menu.shown)
         menu_update (ww, wh);
 
-    if (n_tiles_left == 0)
+    if (all_selected ())
         game_over = true;
 
     return true;

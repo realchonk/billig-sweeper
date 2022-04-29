@@ -24,12 +24,11 @@
 
 #define TITLE "Billig Sweeper"
 #define GITHUB_URL "https://github.com/riscygeek/billig-sweeper"
-#define arraylen(a) (sizeof (a) / sizeof (*(a)))
 
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_Texture *sprite;
-extern bool game_over;
+extern bool game_over, shift_pressed;
 
 bool init_SDL2 (void);
 void quit_SDL2 (void);

@@ -55,34 +55,32 @@ btn_restart_on_move (struct menu_button *btn)
 static bool
 btn_addsub_bomb_on_click (struct menu_button *btn)
 {
+    const int inc = shift_pressed ? 10 : 1;
     switch (btn->id) {
     case BTN_ADD_BOMB:
-        if (n_bombs < 999)
-            ++n_bombs;
+        n_bombs += inc;
         break;
     case BTN_SUB_BOMB:
-        if (n_bombs > 1)
-            --n_bombs;
+        n_bombs -= inc;
         break;
     case BTN_ADD_HORIZ:
-        if (t_width < 999)
-            ++t_width;
+        t_width += inc;
        break;
     case BTN_SUB_HORIZ:
-        if (t_width > 1)
-            --t_width;
+        t_width -= inc;
         break;
     case BTN_ADD_VERT:
-        if (t_height < 999)
-            ++t_height;
+        t_height += inc;
         break;
     case BTN_SUB_VERT:
-        if (t_height > 1)
-            --t_height;
+        t_height -= inc;
         break;
     default:
         abort ();
     }
+    t_width = my_clamp (t_width, 2, 999);
+    t_height = my_clamp (t_height, 2, 999);
+    n_bombs = my_clamp (n_bombs, 1, my_min (999, t_width * t_height - 1));
     init_tiles (t_width, t_height, n_bombs);
     return true;
 }
