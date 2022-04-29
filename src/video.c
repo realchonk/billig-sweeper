@@ -207,6 +207,17 @@ handle_event (const SDL_Event *e)
     switch (e->type) {
     case SDL_QUIT:
         return false;
+    case SDL_KEYDOWN:
+        switch (e->key.keysym.sym) {
+        case SDLK_LSHIFT:
+            shift_pressed = true;
+            break;
+        default:
+            if (menu.shown && !menu_handle_event (e))
+                return false;
+            break;
+        }
+        break;
     case SDL_KEYUP:
         switch (e->key.keysym.sym) {
         case SDLK_F1:
@@ -222,7 +233,7 @@ handle_event (const SDL_Event *e)
         case SDLK_q:
             return false;
         case SDLK_LSHIFT:
-            shift_pressed = e->key.state;
+            shift_pressed = false;
             break;
         default:
             if (menu.shown && !menu_handle_event (e))
