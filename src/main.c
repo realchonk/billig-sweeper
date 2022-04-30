@@ -82,15 +82,17 @@ main (int argc, char *argv[])
         }
     }
 
-    menu_init ();
-
     // Game initialization.
     srand (time (NULL));
     if (!init_tiles (w, h, nb) || !init_SDL2 ())
         return 1;
 
+    menu_init ();
+
     game_over = false;
     menu.shown = false;
+
+    render ();
 
     while (true) {
         SDL_Event e;
@@ -98,7 +100,7 @@ main (int argc, char *argv[])
         if (SDL_WaitEvent (&e) && !handle_event (&e))
             break;
 
-        render ();
+        //render ();
     }
 
     quit_SDL2 ();

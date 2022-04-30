@@ -121,6 +121,8 @@ draw_button (const struct menu_button *btn)
 void
 menu_init (void)
 {
+    int ww, wh;
+
     // Init quit button
     menu.buttons[BTN_QUIT].trect.x = 73;
     menu.buttons[BTN_QUIT].trect.y = 96;
@@ -168,6 +170,9 @@ menu_init (void)
         menu.buttons[i].id = i;
 
     menu.shown = false;
+
+    SDL_GetWindowSize (window, &ww, &wh);
+    menu_update (ww, wh);
 }
 
 static void
@@ -260,7 +265,9 @@ menu_handle_event (const SDL_Event *e)
         for (size_t i = 0; i < N_BUTTONS; ++i) {
             struct menu_button *btn = &menu.buttons[i];
             if (SDL_PointInRect (&p, &btn->wrect)) {
-                return btn->on_click (btn);
+                const bool v = btn->on_click (btn);
+                render ();
+                return v;
             }
         }
         break;

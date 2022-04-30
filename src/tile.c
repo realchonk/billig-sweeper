@@ -140,6 +140,7 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
         } else {
             expand_tile (t, true);
         }
+        render ();
         break;
     case SDL_BUTTON_RIGHT:
         switch (t->status) {
@@ -152,7 +153,13 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
         case TILE_CLICKED:
             break;
         }
+        render ();
         break;
+    }
+
+    if (all_selected ()) {
+        game_over = true;
+        render ();
     }
 }
 void

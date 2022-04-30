@@ -99,7 +99,7 @@ init_SDL2 ()
     }
 
     // Set the minimum window size to a reasonable value.
-    SDL_SetWindowMinimumSize (window, 400, 200);
+    SDL_SetWindowMinimumSize (window, 150, 100);
 
     // Print information about the.
     SDL_GetRendererInfo (renderer, &renderInfo);
@@ -225,10 +225,12 @@ handle_event (const SDL_Event *e)
             break;
         case SDLK_r:
             reset_game ();
+            render ();
             break;
         case SDLK_ESCAPE:
         case SDLK_m:
             menu.shown = !menu.shown;
+            render ();
             break;
         case SDLK_q:
             return false;
@@ -259,13 +261,16 @@ handle_event (const SDL_Event *e)
             break;
         }
         break;
+    case SDL_WINDOWEVENT:
+        switch (e->window.event) {
+        case SDL_WINDOWEVENT_RESIZED:
+        case SDL_WINDOWEVENT_MAXIMIZED:
+            menu_update (ww, wh);
+            render ();
+            break;
+        }
+        break;
     }
-
-    if (menu.shown)
-        menu_update (ww, wh);
-
-    if (all_selected ())
-        game_over = true;
 
     return true;
 }
