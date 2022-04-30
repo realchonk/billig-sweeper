@@ -28,6 +28,12 @@ init_SDL2 ()
     SDL_Surface *surface;
     char *path_surface;
 
+    // Prefer Wayland by default, if SDL2 >= 2.0.22
+#if SDL_MAJOR_VERSION >= 2 && (SDL_MINOR_VERSION > 0 || SDL_PATCHLEVEL >= 22)
+    SDL_SetHint (SDL_HINT_VIDEODRIVER, "wayland,x11");
+#endif
+
+
     // Initialize SDL2 & SDL2_image.
     if (SDL_Init (SDL_INIT_VIDEO) != 0) {
         printf ("Failed to initialize SDL2: %s\n", SDL_GetError ());
