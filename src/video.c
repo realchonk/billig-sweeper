@@ -265,6 +265,7 @@ handle_event (const SDL_Event *e)
         switch (e->window.event) {
         case SDL_WINDOWEVENT_RESIZED:
         case SDL_WINDOWEVENT_MAXIMIZED:
+        case SDL_WINDOWEVENT_SHOWN:
             menu_update (ww, wh);
             render ();
             break;

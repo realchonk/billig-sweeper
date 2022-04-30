@@ -57,8 +57,11 @@ if you just want to try it out,
 you should add `--prefix=$PWD/tmp` to `meson setup build`.
 
 # TODO
-- Build an AppImage
 - Add a config file
     - background color
     - keybinds
 - Add checks for valid values in the menu
+- Move metainfo from flathub to upstream
+- Fix icon location for Flatpaks
+- Enable support for Wayland.
+- Add a help menu (for keybinds)
