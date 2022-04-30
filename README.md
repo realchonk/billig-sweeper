@@ -1,6 +1,8 @@
 # Billig-Sweeper
 This is a just another simple minesweeper clone.
 
+![](data/Screenshots/bsw1.png)
+
 # Usage
 ```
 billig-sweeper [-h]
