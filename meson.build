@@ -10,7 +10,7 @@ project (
 
 prefix = get_option ('prefix')
 datadir = get_option ('datadir')
-icondir = datadir / 'hicolor' / '256x256' / 'apps'
+icondir = datadir / 'icons' / 'hicolor' / '256x256' / 'apps'
 
 # Create a 'config.h' file.
 conf = configuration_data ()
