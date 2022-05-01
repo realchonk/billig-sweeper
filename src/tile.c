@@ -74,14 +74,11 @@ reset_tiles (int nb)
             t->x = x;
             t->y = y;
 
-            t->n_bombs += tile_is_bomb (x - 1, y - 1);
-            t->n_bombs += tile_is_bomb (x    , y - 1);
-            t->n_bombs += tile_is_bomb (x + 1, y - 1);
-            t->n_bombs += tile_is_bomb (x - 1, y    );
-            t->n_bombs += tile_is_bomb (x + 1, y    );
-            t->n_bombs += tile_is_bomb (x - 1, y + 1);
-            t->n_bombs += tile_is_bomb (x    , y + 1);
-            t->n_bombs += tile_is_bomb (x + 1, y + 1);
+            for (unsigned i = 0; i < 9; ++i) {
+                const int dx = x + (-1 + (i / 3));
+                const int dy = y + (-1 + (i % 3));
+                t->n_bombs += tile_is_bomb (dx, dy);
+            }
         }
     }
 }
