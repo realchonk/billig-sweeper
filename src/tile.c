@@ -119,14 +119,16 @@ expand_tile (struct tile *t, bool initial)
     if (!t || t->is_bomb || (!initial && t->status != TILE_NONE && t->status != TILE_MARKED))
         return;
     select_tile (t);
-    expand_tile (get_tile (t->x - 1, t->y - 1), false);
-    expand_tile (get_tile (t->x    , t->y - 1), false);
-    expand_tile (get_tile (t->x + 1, t->y - 1), false);
-    expand_tile (get_tile (t->x - 1, t->y    ), false);
-    expand_tile (get_tile (t->x + 1, t->y    ), false);
-    expand_tile (get_tile (t->x - 1, t->y + 1), false);
-    expand_tile (get_tile (t->x    , t->y + 1), false);
-    expand_tile (get_tile (t->x + 1, t->y + 1), false);
+    if (t->n_bombs == 0) {
+        expand_tile (get_tile (t->x - 1, t->y - 1), false);
+        expand_tile (get_tile (t->x    , t->y - 1), false);
+        expand_tile (get_tile (t->x + 1, t->y - 1), false);
+        expand_tile (get_tile (t->x - 1, t->y    ), false);
+        expand_tile (get_tile (t->x + 1, t->y    ), false);
+        expand_tile (get_tile (t->x - 1, t->y + 1), false);
+        expand_tile (get_tile (t->x    , t->y + 1), false);
+        expand_tile (get_tile (t->x + 1, t->y + 1), false);
+    }
 }
 
 void
