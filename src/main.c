@@ -58,7 +58,7 @@ main (int argc, char *argv[])
             );
             return 0;
         case 'V':
-            printf ("%s v%s.", TITLE, MSW_VERSION);
+            printf ("%s v%s.\n", TITLE, MSW_VERSION);
             return 0;
         case 's':
             if (sscanf (optarg, "%dx%d", &w, &h) != 2) {
