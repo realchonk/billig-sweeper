@@ -53,6 +53,8 @@ init_SDL2 ()
 
     // Create a hardware-accelerated renderer.
     renderer = SDL_CreateRenderer (window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer)
+        renderer = SDL_CreateRenderer (window, -1, SDL_RENDERER_SOFTWARE);
     if (!renderer) {
         printf ("Failed to create renderer: %s\n", SDL_GetError ());
         SDL_DestroyWindow (window);
