@@ -42,6 +42,13 @@
   <content_rating type="oars-1.0" />
 
   <releases>
+    <release version="1.1" date="2022-05-05">
+      <description>
+        <description>
+          <p>Version 1.1</p>
+        </description>
+      </description>
+    </release>
     <release version="1.0" date="2022-04-30">
       <description>
         <p>Initial Release</p>
