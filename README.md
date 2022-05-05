@@ -71,6 +71,5 @@ you should add `--prefix=$PWD/tmp` to `meson setup build` or `configure`.
 - Add a config file
     - background color
     - keybinds
-- Move metainfo from flathub to upstream
 - Enable support for Wayland.
 - Add a help menu (for keybinds)
