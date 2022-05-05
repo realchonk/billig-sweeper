@@ -99,8 +99,6 @@ main (int argc, char *argv[])
 
         if (SDL_WaitEvent (&e) && !handle_event (&e))
             break;
-
-        //render ();
     }
 
     quit_SDL2 ();
