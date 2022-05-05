@@ -45,16 +45,27 @@ sudo dnf install gcc meson sdl2-devel sdl2_image-devel
 ```
 git clone https://github.com/riscygeek/billig-sweeper
 cd billig-sweeper
+```
+
+### Meson
+```
 meson setup build
 meson compile -C build
 meson install -C build
+```
+
+### Autotools-like configure (experimental)
+```
+./configure
+make
+sudo make install
 ```
 
 Note:
 
 This project must be installed to work,
 if you just want to try it out,
-you should add `--prefix=$PWD/tmp` to `meson setup build`.
+you should add `--prefix=$PWD/tmp` to `meson setup build` or `configure`.
 
 # TODO
 - Add a config file
