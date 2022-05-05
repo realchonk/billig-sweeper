@@ -10,12 +10,12 @@ billig-sweeper [-h]
 
 ## Keybindings
 
-| Key | Actions          |
-|-----|------------------|
-|  F1 | Open Github link |
-|  m  | Open menu        |
-|  r  | Restart game     |
-|  q  | Quit             |
+|  Key  | Actions          |
+|-------|------------------|
+|   F1  | Open Github link |
+| ESC/m | Open menu        |
+|   r   | Restart game     |
+|   q   | Quit             |
 
 # Installation
 
@@ -60,8 +60,6 @@ you should add `--prefix=$PWD/tmp` to `meson setup build`.
 - Add a config file
     - background color
     - keybinds
-- Add checks for valid values in the menu
 - Move metainfo from flathub to upstream
-- Fix icon location for Flatpaks
 - Enable support for Wayland.
 - Add a help menu (for keybinds)
