@@ -44,9 +44,7 @@
   <releases>
     <release version="1.1" date="2022-05-05">
       <description>
-        <description>
-          <p>Version 1.1</p>
-        </description>
+        <p>Version 1.1</p>
       </description>
     </release>
     <release version="1.0" date="2022-04-30">
