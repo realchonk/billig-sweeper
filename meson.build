@@ -63,3 +63,9 @@ install_data (
 	'data/billig-sweeper.desktop',
 	install_dir: prefix / datadir / 'applications'
 )
+
+# Install metainfo file.
+install_data (
+    'data/xyz.stuerz.BilligSweeper.metainfo.xml',
+    install_dir: prefix / datadir / 'metainfo'
+)
