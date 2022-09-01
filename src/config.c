@@ -9,7 +9,7 @@
 int default_n_mines     = 10;
 int default_width       = 10;
 int default_height      = 10;
-SDL_Color default_color = { .r = 255, .g = 0, .b = 255, .a = 255, };
+SDL_Color default_color = { .r = 16, .g = 16, .b = 16, .a = 255, };
 
 #define read_val_int(x)                                                 \
 x = toml_int_in (game, #x);                                             \
