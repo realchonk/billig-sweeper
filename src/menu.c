@@ -82,6 +82,7 @@ btn_addsub_bomb_on_click (struct menu_button *btn)
     default_height = my_clamp (t_height, 2, 999);
     default_n_mines = my_clamp (default_n_mines, 1, my_min (999, t_width * t_height - 1));
     init_tiles ();
+    game_over = false;
     save_settings ();
     return true;
 }
@@ -248,7 +249,7 @@ menu_draw (void)
     SDL_SetRenderDrawColor (renderer, 128, 128, 128, 255);
     SDL_RenderDrawRect (renderer, &menu.rect);
 
-    menu_draw_int (n_bombs, 3, menu.rect.x + xt + 5, yt, xt, yt);
+    menu_draw_int (default_n_mines, 3, menu.rect.x + xt + 5, yt, xt, yt);
     menu_draw_int (t_width, 3, menu.rect.x + xt + 5, yt * 2, xt, yt);
     menu_draw_int (t_height, 3, menu.rect.x + xt + 5, yt * 3, xt, yt);
 

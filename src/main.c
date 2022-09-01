@@ -29,8 +29,8 @@ bool game_over;
 void
 reset_game (void)
 {
-    reset_tiles ();
     game_over = false;
+    reset_tiles ();
 }
 
 int

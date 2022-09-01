@@ -22,7 +22,7 @@
 
 struct tile *tiles = NULL;
 int n_bombs, n_selected;
-
+bool generated = false;
 
 struct tile *
 get_tile (int x, int y)
@@ -42,6 +42,12 @@ void
 reset_tiles (void)
 {
     memset (tiles, 0, sizeof (struct tile) * t_width * t_height);
+    generated = false;
+}
+void
+generate_tiles (int nx, int ny)
+{
+    memset (tiles, 0, sizeof (struct tile) * t_width * t_height);
 
     int nb = default_n_mines;
     n_bombs = nb;
@@ -57,7 +63,7 @@ reset_tiles (void)
         t = get_tile (x, y);
         assert (t != NULL);
 
-        if (t->is_bomb)
+        if (t->is_bomb || (x == nx && y == ny))
             continue;
 
         t->is_bomb = true;
@@ -82,6 +88,7 @@ reset_tiles (void)
             }
         }
     }
+    generated = true;
 }
 
 bool
@@ -97,6 +104,7 @@ init_tiles (void)
     t_width = default_width;
     t_height = default_height;
     reset_tiles ();
+
     return true;
 }
 

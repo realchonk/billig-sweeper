@@ -253,7 +253,7 @@ handle_event (const SDL_Event *e)
             break;
         }
         break;
-    case SDL_MOUSEBUTTONUP:
+    case SDL_MOUSEBUTTONUP: {
         if (panning) {
             panning = false;
             break;
@@ -271,13 +271,17 @@ handle_event (const SDL_Event *e)
         }
 
 
-        t = get_tile ((e->button.x - toffX) / ts,
-                      (e->button.y - toffY) / ts);
+        const int tx = (e->button.x - toffX) / ts;
+        const int ty = (e->button.y - toffY) / ts;
+        if (!generated)
+            generate_tiles (tx, ty);
+        t = get_tile (tx, ty);
         if (t) {
             tile_handle_event (t, e);
             break;
         }
         break;
+    }
     case SDL_MOUSEMOTION: {
         mouseX = e->motion.x;
         mouseY = e->motion.y;
