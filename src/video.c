@@ -167,7 +167,7 @@ render (void)
     SDL_GetWindowSize (window, &ww, &wh);
     calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
     // Clear the background.
-    SDL_SetRenderDrawColor (renderer, 255, 0, 255, 255);
+    SDL_SetRenderDrawColor (renderer, default_color.r, default_color.g, default_color.b, 255);
     SDL_RenderClear (renderer);
 
     // Render all tiles.
