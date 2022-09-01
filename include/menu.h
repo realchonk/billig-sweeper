@@ -58,5 +58,6 @@ void menu_init (void);
 void menu_draw (void);
 void menu_update (int ww, int wh);
 bool menu_handle_event (const SDL_Event *);
+void menu_draw_int (unsigned value, unsigned len, int x0, int y0, int w, int h);
 
 #endif // FILE_BSW_MENU_H

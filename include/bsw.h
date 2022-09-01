@@ -19,6 +19,7 @@
 #include <stdnoreturn.h>
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <time.h>
 #include "menu.h"
 #include "tile.h"
 #include "util.h"
@@ -30,6 +31,7 @@ extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_Texture *sprite;
 extern bool game_over, shift_pressed;
+extern time_t start_time, end_time;
 
 extern int default_n_mines;
 extern int default_width;

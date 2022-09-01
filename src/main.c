@@ -27,6 +27,7 @@ SDL_Renderer *renderer;
 SDL_Texture *sprite;
 bool game_over;
 static char **args;
+time_t start_time, end_time;
 
 void
 reset_game (void)
@@ -41,6 +42,7 @@ relaunch (void)
     quit_SDL2 ();
     free (tiles);
     execv ("/proc/self/exe", args);
+    _exit (1);
 }
 
 int

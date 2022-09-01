@@ -89,6 +89,7 @@ generate_tiles (int nx, int ny)
         }
     }
     generated = true;
+    start_time = time (NULL);
 }
 
 bool
@@ -144,6 +145,7 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
         select_tile (t);
         if (t->is_bomb) {
             game_over = true;
+            end_time = time (NULL);
         } else {
             expand_tile (t, true);
         }
@@ -166,6 +168,7 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
 
     if (all_selected ()) {
         game_over = true;
+        end_time = time (NULL);
         render ();
     }
 }

@@ -127,7 +127,7 @@ menu_init (void)
 
     // Init quit button
     menu.buttons[BTN_QUIT].trect.x = 73;
-    menu.buttons[BTN_QUIT].trect.y = 96;
+    menu.buttons[BTN_QUIT].trect.y = 32;
     menu.buttons[BTN_QUIT].trect.w = 47;
     menu.buttons[BTN_QUIT].trect.h = 32;
     menu.buttons[BTN_QUIT].on_click = &btn_quit_on_click;
@@ -135,7 +135,7 @@ menu_init (void)
 
     // Init restart button
     menu.buttons[BTN_RESTART].trect.x = 0;
-    menu.buttons[BTN_RESTART].trect.y = 96;
+    menu.buttons[BTN_RESTART].trect.y = 32;
     menu.buttons[BTN_RESTART].trect.w = 73;
     menu.buttons[BTN_RESTART].trect.h = 32;
     menu.buttons[BTN_RESTART].on_click = &btn_restart_on_click;
@@ -187,7 +187,7 @@ button_update (struct menu_button *btn)
     btn->wrect.h = btn->mrect.h;
 }
 
-static void
+void
 menu_draw_int (unsigned value, unsigned len, int x0, int y0, int w, int h)
 {
     const unsigned max_val = powui (10, len) - 1;

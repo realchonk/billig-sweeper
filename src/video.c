@@ -23,7 +23,6 @@ static float tiles_scale = 1.5f;
 static int tiles_offX = 5;
 static int tiles_offY = 5;
 static bool panning = false;
-static int mouseX, mouseY;
 bool shift_pressed = false;
 
 bool
@@ -133,6 +132,45 @@ quit_SDL2 (void)
 
 
 
+void
+menu_draw_xint (unsigned value, unsigned len, int x0, int y0, int w, int h)
+{
+    const unsigned max_val = powui (10, len) - 1;
+    SDL_Rect srect, rect;
+
+    if (value > max_val)
+        value = max_val;
+
+    rect.x = x0;
+    rect.y = y0;
+    rect.w = len * w;
+    rect.h = h;
+
+    srect.y = 0;
+    srect.w = 16;
+    srect.h = 16;
+
+    SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect (renderer, &rect);
+    SDL_SetRenderDrawColor (renderer, 128, 128, 128, 255);
+    SDL_RenderDrawRect (renderer, &rect);
+
+    for (unsigned i = len; i != 0; --i) {
+        const unsigned digit = value % 10;
+        const unsigned x = i-1;
+
+        rect.x = x0 + (x * w);
+        rect.y = y0;
+        rect.w = w;
+        rect.h = h;
+
+        srect.x = 16 * digit;
+
+        SDL_RenderCopy (renderer, sprite, &srect, &rect);
+
+        value /= 10;
+    }
+}
 
 static void
 draw_text (int idx, int ww, int wh)
@@ -140,16 +178,21 @@ draw_text (int idx, int ww, int wh)
     SDL_Rect srect, drect;
 
     srect.x = 0;
-    srect.y = idx * 32;
+    srect.y = idx * 64;
     srect.w = 160;
-    srect.h = 32;
+    srect.h = 64;
 
     drect.w = ww / 2;
-    drect.h = wh / 5;
+    drect.h = wh / 2.5;
     drect.x = (ww - drect.w) / 2;
     drect.y = (wh - drect.h) / 2;
 
     SDL_RenderCopy (renderer, sprite, &srect, &drect);
+
+    drect.y += 9 * drect.h / 16;
+    drect.h = wh / 8;
+
+    menu_draw_int (end_time - start_time, 4, drect.x + drect.x * 2 / 17, drect.y, drect.w * 2 / 9, drect.h);
 }
 
 /*
@@ -214,6 +257,7 @@ render (void)
 bool
 handle_event (const SDL_Event *e)
 {
+    static int mouseX, mouseY;
     int ts, toffX, toffY, ww, wh;
     struct tile *t;
 
@@ -291,12 +335,15 @@ handle_event (const SDL_Event *e)
         break;
     }
     case SDL_MOUSEMOTION: {
+        const int dx = e->motion.xrel;
+        const int dy = e->motion.yrel;
         mouseX = e->motion.x;
         mouseY = e->motion.y;
+
         if (e->motion.state == 1) {
             panning = true;
-            tiles_offX += e->motion.xrel;
-            tiles_offY += e->motion.yrel;
+            tiles_offX += dx;
+            tiles_offY += dy;
             render ();
         }
         break;
