@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,6 +26,7 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Texture *sprite;
 bool game_over;
+static char **args;
 
 void
 reset_game (void)
@@ -33,11 +35,20 @@ reset_game (void)
     reset_tiles ();
 }
 
+noreturn void
+relaunch (void)
+{
+    quit_SDL2 ();
+    free (tiles);
+    execv ("/proc/self/exe", args);
+}
+
 int
 main (int argc, char *argv[])
 {
     int option;
 
+    args = argv;
     load_settings ();
 
     while ((option = getopt (argc, argv, ":hVr:s:n:")) != -1) {

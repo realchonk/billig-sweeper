@@ -234,6 +234,8 @@ handle_event (const SDL_Event *e)
             open_url (GITHUB_URL);
             break;
         case SDLK_r:
+            if (e->key.keysym.mod & KMOD_CTRL)
+                relaunch ();
             reset_game ();
             render ();
             break;

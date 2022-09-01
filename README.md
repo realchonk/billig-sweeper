@@ -10,19 +10,20 @@ billig-sweeper [-h]
 
 ## Keybindings
 
-|  Key  | Actions          |
-|-------|------------------|
-|   F1  | Open Github link |
-| ESC/m | Open menu        |
-|   r   | Restart game     |
-|   q   | Quit             |
+|  Key   | Actions              |
+|--------|----------------------|
+|   F1   | Open Github link     |
+| ESC/m  | Open menu            |
+|   r    | Restart game         |
+| CTRL+r | Restart the process  |
+|   q    | Quit                 |
 
 ## Config
 The game settings are saved in a config file.
 There you can also change the background color.
 The config file is searched in:
-- $XDG_CONDIG_DIR/billig-sweeper/config.toml
-- $HOME/.config/billig-sweeper/config.toml
+- `$XDG_CONDIG_DIR/billig-sweeper/config.toml`
+- `$HOME/.config/billig-sweeper/config.toml`
 
 
 # Installation
@@ -77,7 +78,6 @@ you should add `--prefix=$PWD/tmp` to `meson setup build` or `configure`.
 
 # TODO
 - Add a config file
-    - background color
     - keybinds
 - Enable support for Wayland.
 - Add a help menu (for keybinds)
