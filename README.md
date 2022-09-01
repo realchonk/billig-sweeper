@@ -27,6 +27,11 @@ The config file is searched in:
 
 
 # Installation
+## Flatpak
+First make sure, that you have `flathub` enabled, then:
+```
+flatpak install xyz.stuerz.BilligSweeper
+```
 
 ## Dependencies
 - meson (build-time)
