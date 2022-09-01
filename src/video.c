@@ -163,9 +163,9 @@ calc_tdims (int *tw, int *th, int *toffX, int *toffY, int ww, int wh)
 void
 render (void)
 {
-        int tw, th, toffX, toffY, ww, wh;
-        SDL_GetWindowSize (window, &ww, &wh);
-        calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
+    int tw, th, toffX, toffY, ww, wh;
+    SDL_GetWindowSize (window, &ww, &wh);
+    calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
     // Clear the background.
     SDL_SetRenderDrawColor (renderer, 255, 0, 255, 255);
     SDL_RenderClear (renderer);
@@ -252,8 +252,11 @@ handle_event (const SDL_Event *e)
             break;
         }
 
-        if (game_over)
+        if (game_over) {
+            reset_game ();
+            render ();
             break;
+        }
 
 
         t = get_tile ((e->button.x - toffX) / tw,
