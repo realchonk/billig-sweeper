@@ -19,29 +19,35 @@ billig-sweeper [-h]
 
 # Installation
 
-## Dependencies
+# Flatpak
+```
+flatpak install xyz.stuerz.BilligSweeper
+```
+
+## Building
+### Dependencies
 - meson (build-time)
 - GIMP (only for editing `graphics.xcf`)
 - libSDL2
 - libSDL2_image
 
-### Arch/Manjaro
+#### Arch/Manjaro
 ```
 sudo pacman -S base-devel meson sdl2 sdl2_image
 ```
 
-### Debian/Ubuntu
+#### Debian/Ubuntu
 ```
 sudo apt update
 sudo apt install build-essential meson libsdl2-dev libsdl2-image-dev
 ```
 
-### RHEL/Fedora
+#### RHEL/Fedora
 ```
 sudo dnf install gcc meson sdl2-devel sdl2_image-devel
 ```
 
-## Building
+### Build process
 ```
 git clone https://github.com/riscygeek/billig-sweeper
 cd billig-sweeper
@@ -62,5 +68,4 @@ you should add `--prefix=$PWD/tmp` to `meson setup build`.
     - keybinds
 - Add checks for valid values in the menu
 - Move metainfo from flathub to upstream
-- Fix icon location for Flatpaks
 - Add a help menu (for keybinds)

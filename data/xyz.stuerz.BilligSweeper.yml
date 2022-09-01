@@ -4,6 +4,8 @@ runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
 command: billig-sweeper
 finish-args:
+    - --socket=wayland
+    - --socket=fallback-x11
     - --socket=x11
     - --device=dri
     - --share=ipc
