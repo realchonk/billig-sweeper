@@ -30,10 +30,18 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *sprite;
 extern bool game_over, shift_pressed;
 
+extern int default_n_mines;
+extern int default_width;
+extern int default_height;
+extern SDL_Color default_color;
+
 bool init_SDL2 (void);
 void quit_SDL2 (void);
 void render (void);
 void reset_game (void);
 bool handle_event (const SDL_Event *);
+
+void load_settings (void);
+void save_settings (void);
 
 #endif // FILE_BSW_H

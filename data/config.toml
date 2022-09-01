@@ -1,0 +1,5 @@
+[Game]
+	n_mines = 10
+	width = 10
+	height = 10
+	color = [ 255, 0, 255 ]

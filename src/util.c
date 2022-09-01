@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <stdlib.h> // rand(), malloc(), abort()
-#include <limits.h> // PATH_MAX
-#include <unistd.h> // readlink()
-#include <libgen.h> // dirname()
-#include <stdio.h>  // perror()
+#include <sys/stat.h>   // mkdir()
+#include <stdlib.h>     // rand(), malloc(), abort()
+#include <limits.h>     // PATH_MAX
+#include <unistd.h>     // readlink()
+#include <libgen.h>     // dirname()
+#include <string.h>     // strchr(), strcmp()
+#include <stdio.h>      // perror()
 #include "util.h"
 
 int
@@ -70,4 +72,19 @@ open_url (const char *url)
     char buffer[512];
     snprintf (buffer, sizeof buffer, "xdg-open '%s'", url);
     system (buffer);
+}
+void
+mkdir_p (char *dir)
+{
+    if (strcmp (dir, "/") == 0)
+        return;
+
+    if (access (dir, F_OK) != 0) {
+        char *tmp = strrchr (dir, '/');
+        *tmp = '\0';
+        mkdir_p (dir);
+        *tmp = '/';
+    }
+
+    mkdir (dir, 0755);
 }

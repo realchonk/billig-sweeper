@@ -58,30 +58,31 @@ btn_addsub_bomb_on_click (struct menu_button *btn)
     const int inc = shift_pressed ? 10 : 1;
     switch (btn->id) {
     case BTN_ADD_BOMB:
-        n_bombs += inc;
+        default_n_mines += inc;
         break;
     case BTN_SUB_BOMB:
-        n_bombs -= inc;
+        default_n_mines -= inc;
         break;
     case BTN_ADD_HORIZ:
-        t_width += inc;
+        default_width += inc;
        break;
     case BTN_SUB_HORIZ:
-        t_width -= inc;
+        default_width -= inc;
         break;
     case BTN_ADD_VERT:
-        t_height += inc;
+        default_height += inc;
         break;
     case BTN_SUB_VERT:
-        t_height -= inc;
+        default_height -= inc;
         break;
     default:
         abort ();
     }
-    t_width = my_clamp (t_width, 2, 999);
-    t_height = my_clamp (t_height, 2, 999);
-    n_bombs = my_clamp (n_bombs, 1, my_min (999, t_width * t_height - 1));
-    init_tiles (t_width, t_height, n_bombs);
+    default_width = my_clamp (t_width, 2, 999);
+    default_height = my_clamp (t_height, 2, 999);
+    default_n_mines = my_clamp (default_n_mines, 1, my_min (999, t_width * t_height - 1));
+    init_tiles ();
+    save_settings ();
     return true;
 }
 

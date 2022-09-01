@@ -34,4 +34,7 @@ unsigned powui (unsigned base, unsigned exponent);
 // Opens a URL in a browser.
 void open_url (const char *url);
 
+// Create directory and parents.
+void mkdir_p (char *);
+
 #endif // FILE_BSW_UTIL_H

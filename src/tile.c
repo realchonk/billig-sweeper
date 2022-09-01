@@ -21,7 +21,7 @@
 #include "bsw.h"
 
 struct tile *tiles = NULL;
-int t_width, t_height, n_bombs, n_selected;
+int n_bombs, n_selected;
 
 
 struct tile *
@@ -39,10 +39,11 @@ tile_is_bomb (int x, int y)
 }
 
 void
-reset_tiles (int nb)
+reset_tiles (void)
 {
     memset (tiles, 0, sizeof (struct tile) * t_width * t_height);
 
+    int nb = default_n_mines;
     n_bombs = nb;
     n_selected = 0;
 
@@ -84,19 +85,18 @@ reset_tiles (int nb)
 }
 
 bool
-init_tiles (int w, int h, int nb)
+init_tiles (void)
 {
-    assert (w > 0 && h > 0 && nb > 0);
     free (tiles);
-    tiles = malloc (w * h * sizeof (struct tile));
+    tiles = malloc (default_width * default_height * sizeof (struct tile));
     if (!tiles) {
         perror ("malloc()");
         return false;
     }
 
-    t_width = w;
-    t_height = h;
-    reset_tiles (nb);
+    t_width = default_width;
+    t_height = default_height;
+    reset_tiles ();
     return true;
 }
 

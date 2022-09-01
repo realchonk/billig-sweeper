@@ -33,13 +33,14 @@ struct tile {
 };
 
 extern struct tile *tiles;
-extern int t_width, t_height;
+#define t_width default_width
+#define t_height default_height
 extern int n_bombs, n_selected;
 
 struct tile *get_tile (int x, int y);
 bool tile_is_bomb (int x, int y);
-void reset_tiles (int nb);
-bool init_tiles (int w, int h, int nb);
+void reset_tiles (void);
+bool init_tiles (void);
 void tile_handle_event (struct tile *, const SDL_Event *);
 void tile_draw (const struct tile *, const SDL_Rect *);
 

@@ -29,14 +29,16 @@ bool game_over;
 void
 reset_game (void)
 {
-    reset_tiles (n_bombs);
+    reset_tiles ();
     game_over = false;
 }
 
 int
 main (int argc, char *argv[])
 {
-    int option, w = 10, h = 10, nb = 10;
+    int option;
+
+    load_settings ();
 
     while ((option = getopt (argc, argv, ":hVr:s:n:")) != -1) {
         char *endp;
@@ -61,14 +63,14 @@ main (int argc, char *argv[])
             printf ("%s v%s.\n", TITLE, MSW_VERSION);
             return 0;
         case 's':
-            if (sscanf (optarg, "%dx%d", &w, &h) != 2) {
+            if (sscanf (optarg, "%dx%d", &default_width, &default_height) != 2) {
                 printf ("Invalid size: %s\n", optarg);
                 return 1;
             }
             break;
         case 'n':
-            nb = (int)strtol (optarg, &endp, 10);
-            if (*endp || nb < 1) {
+            default_n_mines = (int)strtol (optarg, &endp, 10);
+            if (*endp || default_n_mines < 1) {
                 printf ("Invalid number of bombs: %s\n", optarg);
                 return 1;
             }
@@ -84,7 +86,7 @@ main (int argc, char *argv[])
 
     // Game initialization.
     srand (time (NULL));
-    if (!init_tiles (w, h, nb) || !init_SDL2 ())
+    if (!init_tiles () || !init_SDL2 ())
         return 1;
 
     menu_init ();
