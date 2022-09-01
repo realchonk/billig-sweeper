@@ -161,6 +161,7 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
         render ();
     }
 }
+
 void
 tile_draw (const struct tile *t, const SDL_Rect *rect)
 {

@@ -19,6 +19,11 @@
 #include "config.h"
 #include "bsw.h"
 
+static float tiles_scale = 1.5f;
+static int tiles_offX = 5;
+static int tiles_offY = 5;
+static bool panning = false;
+static int mouseX, mouseY;
 bool shift_pressed = false;
 
 bool
@@ -143,34 +148,25 @@ draw_text (int idx, int ww, int wh)
 
 /*
  * Calculate the render dimensions:
- *   tw - tile width
- *   th - tile height
+ *   ts - tile size
  *   toffX - X render offset for tile map
  *   toffY - Y render offset for tile map
+ *   ww - window width
+ *   wh - window height
  */
 static void
-calc_tdims (int *tw, int *th, int *toffX, int *toffY, int ww, int wh)
+calc_tdims (int *ts, int *toffX, int *toffY, int ww, int wh)
 {
-    const int ctoffX = 5, ctoffY = 5;
-
-    *tw = (ww - ctoffX * 2) / t_width;
-    *th = (wh - ctoffY * 2) / t_height;
-    *toffX = (ww - (*tw * t_width)) / 2;
-    *toffY = (wh - (*th * t_height)) / 2;
+    *ts = ww / t_width * tiles_scale;
+    *toffX = tiles_offX + (ww - (*ts * t_width)) / 2;
+    *toffY = tiles_offY + (wh - (*ts * t_height)) / 2;
 }
 
-
 void
-render (void)
+render_tiles (int ww, int wh)
 {
-    int tw, th, toffX, toffY, ww, wh;
-    SDL_GetWindowSize (window, &ww, &wh);
-    calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
-    // Clear the background.
-    SDL_SetRenderDrawColor (renderer, default_color.r, default_color.g, default_color.b, 255);
-    SDL_RenderClear (renderer);
-
-    // Render all tiles.
+    int ts, toffX, toffY;
+    calc_tdims (&ts, &toffX, &toffY, ww, wh);
     for (int y = 0; y < t_height; ++y) {
         for (int x = 0; x < t_width; ++x) {
             struct tile *t;
@@ -179,14 +175,26 @@ render (void)
             t = get_tile (x, y);
             assert (t != NULL);
 
-            rect.x = toffX + (x * tw);
-            rect.y = toffY + (y * th);
-            rect.w = tw;
-            rect.h = th;
+            rect.x = toffX + (x * ts);
+            rect.y = toffY + (y * ts);
+            rect.w = ts;
+            rect.h = ts;
 
             tile_draw (t, &rect);
         }
     }
+}
+
+void
+render (void)
+{
+    int ww, wh;
+    SDL_GetWindowSize (window, &ww, &wh);
+    // Clear the background.
+    SDL_SetRenderDrawColor (renderer, default_color.r, default_color.g, default_color.b, 255);
+    SDL_RenderClear (renderer);
+
+    render_tiles (ww, wh);
 
     if (game_over)
         draw_text (all_selected () ? 1 : 2, ww, wh);
@@ -200,11 +208,11 @@ render (void)
 bool
 handle_event (const SDL_Event *e)
 {
-    int tw, th, toffX, toffY, ww, wh;
+    int ts, toffX, toffY, ww, wh;
     struct tile *t;
 
     SDL_GetWindowSize (window, &ww, &wh);
-    calc_tdims (&tw, &th, &toffX, &toffY, ww, wh);
+    calc_tdims (&ts, &toffX, &toffY, ww, wh);
 
     switch (e->type) {
     case SDL_QUIT:
@@ -245,7 +253,11 @@ handle_event (const SDL_Event *e)
             break;
         }
         break;
-    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+        if (panning) {
+            panning = false;
+            break;
+        }
         if (menu.shown) {
             if (!menu_handle_event (e))
                 return false;
@@ -259,13 +271,43 @@ handle_event (const SDL_Event *e)
         }
 
 
-        t = get_tile ((e->button.x - toffX) / tw,
-                      (e->button.y - toffY) / th);
+        t = get_tile ((e->button.x - toffX) / ts,
+                      (e->button.y - toffY) / ts);
         if (t) {
             tile_handle_event (t, e);
             break;
         }
         break;
+    case SDL_MOUSEMOTION: {
+        mouseX = e->motion.x;
+        mouseY = e->motion.y;
+        if (e->motion.state == 1) {
+            panning = true;
+            tiles_offX += e->motion.xrel;
+            tiles_offY += e->motion.yrel;
+            render ();
+        }
+        break;
+    }
+    case SDL_MOUSEWHEEL: {
+        const float preX = (float)(mouseX - toffX) / ts;
+        const float preY = (float)(mouseY - toffY) / ts;
+
+        // Zoom in/out with the scroll wheel.
+        tiles_scale *= 1.0f + e->wheel.preciseY * 0.1f;
+        tiles_scale = my_clamp (tiles_scale, 0.25f, 8.0f);
+
+        calc_tdims (&ts, &toffX, &toffY, ww, wh);
+
+        const float afterX = preX * ts + toffX;
+        const float afterY = preY * ts + toffY;
+
+        tiles_offX += mouseX - afterX;
+        tiles_offY += mouseY - afterY;
+
+        render ();
+        break;
+    }
     case SDL_WINDOWEVENT:
         switch (e->window.event) {
         case SDL_WINDOWEVENT_RESIZED:

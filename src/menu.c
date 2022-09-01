@@ -259,7 +259,7 @@ bool
 menu_handle_event (const SDL_Event *e)
 {
     switch (e->type) {
-    case SDL_MOUSEBUTTONDOWN: {
+    case SDL_MOUSEBUTTONUP: {
         SDL_Point p;
         p.x = e->button.x;
         p.y = e->button.y;
