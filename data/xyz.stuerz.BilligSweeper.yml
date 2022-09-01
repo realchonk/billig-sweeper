@@ -1,14 +1,13 @@
 app-id: xyz.stuerz.BilligSweeper
 runtime: org.freedesktop.Platform
-runtime-version: '21.08'
+runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
 command: billig-sweeper
-rename-desktop-file: billig-sweeper.desktop
-rename-icon: billig-sweeper
 finish-args:
     - --socket=x11
     - --device=dri
     - --share=ipc
+    - --env=XDG_CONFIG_DIR=.var/app/xyz.stuerz.BilligSweeper/config
 
 modules:
   - name: billig-sweeper
@@ -16,5 +15,8 @@ modules:
     builddir: true
     sources:
       - type: archive
-        url: https://github.com/riscygeek/billig-sweeper/archive/refs/tags/v1.0.tar.gz
-        sha256: 27d79a341c5b15041bd4d0ff135da19c25460f014af1551a3d3421d000eb19e1
+        url: https://github.com/riscygeek/billig-sweeper/archive/refs/tags/v1.2-rc1.tar.gz
+        sha256: 73da52b491de3fd14b744ceade0193ae724c72e5cae9b3fa4baf2a2d06ccd231
+      - type: git
+        url: https://github.com/cktan/tomlc99
+        dest: tomlc99

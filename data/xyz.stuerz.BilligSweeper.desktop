@@ -2,7 +2,7 @@
 Name=Billig Sweeper
 Comment=Yet another stupid Minesweeper clone
 Exec=billig-sweeper
-Icon=billig-sweeper
+Icon=xyz.stuerz.BilligSweeper
 Type=Application
-Categories=Games;
+Categories=Game;
 

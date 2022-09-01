@@ -16,7 +16,7 @@ icondir = datadir / 'icons' / 'hicolor' / '256x256' / 'apps'
 conf = configuration_data ()
 conf.set_quoted ('MSW_VERSION', meson.project_version ())
 conf.set_quoted ('MSW_GRAPHICS_PNG', datadir / meson.project_name () / 'graphics.png')
-conf.set_quoted ('MSW_ICON', icondir / 'billig-sweeper.png')
+conf.set_quoted ('MSW_ICON', icondir / 'xyz.stuerz.BilligSweeper.png')
 configure_file (
 	input: 'config.h.in',
 	output: 'config.h',
@@ -61,13 +61,13 @@ install_data (
 
 # Install icon.
 install_data (
-	'data/billig-sweeper.png',
+	'data/xyz.stuerz.BilligSweeper.png',
 	install_dir: icondir
 )
 
 # Install .desktop file.
 install_data (
-	'data/billig-sweeper.desktop',
+	'data/xyz.stuerz.BilligSweeper.desktop',
 	install_dir: prefix / datadir / 'applications'
 )
 
