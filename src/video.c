@@ -29,7 +29,7 @@ init_SDL2 ()
     char *path_surface;
 
     // Prefer Wayland by default, if SDL2 >= 2.0.22
-#if SDL_MAJOR_VERSION >= 2 && (SDL_MINOR_VERSION > 0 || SDL_PATCHLEVEL >= 22)
+#if SDL_MAJOR_VERSION >= 2 && (SDL_MINOR_VERSION >= 23 || (SDL_MINOR_VERSION == 0 && SDL_PATCHLEVEL == 22))
     SDL_SetHint (SDL_HINT_VIDEODRIVER, "wayland,x11");
 #endif
 
