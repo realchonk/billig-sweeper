@@ -17,6 +17,14 @@ billig-sweeper [-h]
 |   r   | Restart game     |
 |   q   | Quit             |
 
+## Config
+The game settings are saved in a config file.
+There you can also change the background color.
+The config file is searched in:
+- $XDG_CONDIG_DIR/billig-sweeper/config.toml
+- $HOME/.config/billig-sweeper/config.toml
+
+
 # Installation
 
 ## Dependencies
