@@ -1,7 +1,7 @@
 project (
 	'billigsweeper',
 	'c',
-	version: '1.2-rc1',
+	version: '1.2-rc2',
 	default_options: [
 		'warning_level=3',
 		'c_std=gnu11',
