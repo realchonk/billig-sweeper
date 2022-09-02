@@ -16,9 +16,5 @@ modules:
     buildsystem: meson
     builddir: true
     sources:
-      - type: archive
-        url: https://github.com/riscygeek/billig-sweeper/archive/refs/tags/v1.2-rc1.tar.gz
-        sha256: 73da52b491de3fd14b744ceade0193ae724c72e5cae9b3fa4baf2a2d06ccd231
-      - type: git
-        url: https://github.com/cktan/tomlc99
-        dest: tomlc99
+      - type: dir
+        path: /home/benni/src/c/billig-sweeper
