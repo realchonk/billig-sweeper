@@ -120,6 +120,36 @@ draw_button (const struct menu_button *btn)
     SDL_RenderCopy (renderer, sprite, &btn->trect, &btn->wrect);
 }
 
+static bool
+btn_select_on_click(struct menu_button *btn)
+{
+    const int values[3][3] = {
+        {  8,  8, 10 },
+        { 16, 16, 40 },
+        { 30, 16, 99 },
+    };
+    const int n = btn->id - BTN_MIDGET;
+
+    default_width   = values[n][0];
+    default_height  = values[n][1];
+    default_n_mines = values[n][2];
+    init_tiles ();
+    game_over = false;
+    save_settings ();
+    return true;
+}
+static void
+btn_select_on_move (struct menu_button *btn)
+{
+    const int n = btn->id - BTN_MIDGET;
+
+    const float aspect = (float)btn->trect.w / (float)btn->trect.h;
+    btn->mrect.h = menu.rect.h / 3;
+    btn->mrect.w = (int)(btn->mrect.h * aspect);
+    btn->mrect.x = menu.rect.w / 3 + (menu.rect.w / 7 * n);
+    btn->mrect.y = menu.rect.h - btn->mrect.h - 10;
+}
+
 void
 menu_init (void)
 {
@@ -140,6 +170,16 @@ menu_init (void)
     menu.buttons[BTN_RESTART].trect.h = 32;
     menu.buttons[BTN_RESTART].on_click = &btn_restart_on_click;
     menu.buttons[BTN_RESTART].on_move = &btn_restart_on_move;
+
+    // Midget
+    for (int i = BTN_MIDGET; i <= BTN_NON_MIDGET; ++i) {
+        menu.buttons[i].trect.x = (i - BTN_MIDGET) * 32;
+        menu.buttons[i].trect.y = 192;
+        menu.buttons[i].trect.w = 32;
+        menu.buttons[i].trect.h = 64;
+        menu.buttons[i].on_click = &btn_select_on_click;
+        menu.buttons[i].on_move = &btn_select_on_move;
+    }
 
     // Init +/- buttons
     for (int i = BTN_ADD_BOMB; i <= BTN_SUB_VERT; ++i) {

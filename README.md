@@ -63,9 +63,7 @@ if you just want to try it out,
 you should add `--prefix=$PWD/tmp` to `meson setup build`.
 
 # TODO
-- Add a config file
-    - background color
+- Add to the config file
     - keybinds
 - Add checks for valid values in the menu
-- Move metainfo from flathub to upstream
 - Add a help menu (for keybinds)
