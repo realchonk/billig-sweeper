@@ -44,6 +44,7 @@ void quit_SDL2 (void);
 void render (void);
 void reset_game (void);
 bool handle_event (const SDL_Event *);
+void post_init_video (void);
 
 void load_settings (void);
 void save_settings (void);

@@ -20,10 +20,10 @@
 #include "config.h"
 #include "bsw.h"
 
-static float tiles_scale = 1.0f;
-static int tiles_offX = 0;
-static int tiles_offY = 0;
+static int t_size;
+static float t_offX, t_offY;
 static bool panning = false;
+static int w_width, w_height;
 bool shift_pressed = false;
 
 bool
@@ -117,7 +117,6 @@ init_SDL2 ()
     // Print information about the.
     SDL_GetRendererInfo (renderer, &renderInfo);
     printf ("Renderer: %s\n", renderInfo.name);
-
     return true;
 }
 
@@ -131,7 +130,15 @@ quit_SDL2 (void)
     SDL_Quit ();
 }
 
+void
+post_init_video (void)
+{
+    SDL_GetWindowSize (window, &w_width, &w_height);
 
+    t_size = my_min (w_width / t_width, w_height / t_height);
+    t_offX = (float)(w_width - (t_width * t_size)) / t_size / 2;
+    t_offY = (float)(w_height - (t_height * t_size)) / t_size / 2;
+}
 
 void
 menu_draw_xint (unsigned value, unsigned len, int x0, int y0, int w, int h)
@@ -174,7 +181,7 @@ menu_draw_xint (unsigned value, unsigned len, int x0, int y0, int w, int h)
 }
 
 static void
-draw_text (int idx, int ww, int wh)
+draw_text (int idx)
 {
     SDL_Rect srect, drect;
 
@@ -183,40 +190,23 @@ draw_text (int idx, int ww, int wh)
     srect.w = 160;
     srect.h = 64;
 
-    drect.w = ww / 2;
-    drect.h = wh / 2.5;
-    drect.x = (ww - drect.w) / 2;
-    drect.y = (wh - drect.h) / 2;
+    drect.w = w_width / 2;
+    drect.h = w_height * 2 / 5;
+    drect.x = (w_width - drect.w) / 2;
+    drect.y = (w_height - drect.h) / 2;
 
     SDL_RenderCopy (renderer, sprite, &srect, &drect);
 
     drect.y += 9 * drect.h / 16;
-    drect.h = wh / 8;
+    drect.h = w_height / 8;
 
     menu_draw_int (end_time - start_time, 4, drect.x + drect.x * 2 / 17, drect.y, drect.w * 2 / 9, drect.h);
 }
 
-/*
- * Calculate the render dimensions:
- *   ts - tile size
- *   toffX - X render offset for tile map
- *   toffY - Y render offset for tile map
- *   ww - window width
- *   wh - window height
- */
-static void
-calc_tdims (int *ts, int *toffX, int *toffY, int ww, int wh)
-{
-    *ts = ww / t_width * tiles_scale;
-    *toffX = tiles_offX + (ww - (*ts * t_width)) / 2;
-    *toffY = tiles_offY + (wh - (*ts * t_height)) / 2;
-}
-
 void
-render_tiles (int ww, int wh)
+render_tiles (void)
 {
-    int ts, toffX, toffY;
-    calc_tdims (&ts, &toffX, &toffY, ww, wh);
+    const int ox = t_offX * t_size, oy = t_offY * t_size;
     for (int y = 0; y < t_height; ++y) {
         for (int x = 0; x < t_width; ++x) {
             struct tile *t;
@@ -225,10 +215,10 @@ render_tiles (int ww, int wh)
             t = get_tile (x, y);
             assert (t != NULL);
 
-            rect.x = toffX + (x * ts);
-            rect.y = toffY + (y * ts);
-            rect.w = ts;
-            rect.h = ts;
+            rect.x = ox + (x * t_size);
+            rect.y = oy + (y * t_size);
+            rect.w = t_size;
+            rect.h = t_size;
 
             tile_draw (t, &rect);
         }
@@ -238,16 +228,14 @@ render_tiles (int ww, int wh)
 void
 render (void)
 {
-    int ww, wh;
-    SDL_GetWindowSize (window, &ww, &wh);
     // Clear the background.
     SDL_SetRenderDrawColor (renderer, default_color.r, default_color.g, default_color.b, 255);
     SDL_RenderClear (renderer);
 
-    render_tiles (ww, wh);
+    render_tiles ();
 
     if (game_over)
-        draw_text (all_selected () ? 1 : 2, ww, wh);
+        draw_text (all_selected () ? 1 : 2);
 
     if (menu.shown)
         menu_draw ();
@@ -258,15 +246,17 @@ render (void)
     SDL_RenderPresent (renderer);
 }
 
+static bool
+check_off (void)
+{
+    printf ("%d, %f, %f\n", t_size, t_offX, t_offY);
+}
+
 bool
 handle_event (const SDL_Event *e)
 {
     static int mouseX, mouseY;
-    int ts, toffX, toffY, ww, wh;
     struct tile *t;
-
-    SDL_GetWindowSize (window, &ww, &wh);
-    calc_tdims (&ts, &toffX, &toffY, ww, wh);
 
     switch (e->type) {
     case SDL_QUIT:
@@ -337,8 +327,8 @@ handle_event (const SDL_Event *e)
         }
 
 
-        const int tx = (e->button.x - toffX) / ts;
-        const int ty = (e->button.y - toffY) / ts;
+        const int tx = (e->button.x - t_offX * t_size) / t_size;
+        const int ty = (e->button.y - t_offY * t_size) / t_size;
         if (!generated)
             generate_tiles (tx, ty);
         t = get_tile (tx, ty);
@@ -356,27 +346,26 @@ handle_event (const SDL_Event *e)
 
         if (e->motion.state == 1 && !(game_over || menu.shown || dialog_is_open)) {
             panning = true;
-            tiles_offX += dx;
-            tiles_offY += dy;
+            t_offX += (float)dx / t_size;
+            t_offY += (float)dy / t_size;
             render ();
         }
         break;
     }
     case SDL_MOUSEWHEEL: {
-        const float preX = (float)(mouseX - toffX) / ts;
-        const float preY = (float)(mouseY - toffY) / ts;
+        const float preX = (float)(mouseX - t_offX * t_size) / t_size;
+        const float preY = (float)(mouseY - t_offY * t_size) / t_size;
 
         // Zoom in/out with the scroll wheel.
-        tiles_scale *= 1.0f + e->wheel.preciseY * 0.1f;
-        tiles_scale = my_clamp (tiles_scale, 0.25f, 8.0f);
+        const float ts = t_size * (1.0f + e->wheel.preciseY * 0.1f);
+        const float mx = my_min (w_width / 5, w_height / 5);
+        t_size = my_clamp (ts, 10.0f, mx);
 
-        calc_tdims (&ts, &toffX, &toffY, ww, wh);
+        const float afterX = (float)(mouseX - t_offX * t_size) / t_size;
+        const float afterY = (float)(mouseY - t_offY * t_size) / t_size;
 
-        const float afterX = preX * ts + toffX;
-        const float afterY = preY * ts + toffY;
-
-        tiles_offX += mouseX - afterX;
-        tiles_offY += mouseY - afterY;
+        t_offX += afterX - preX;
+        t_offY += afterY - preY;
 
         render ();
         break;
@@ -385,11 +374,20 @@ handle_event (const SDL_Event *e)
         switch (e->window.event) {
         case SDL_WINDOWEVENT_RESIZED:
         case SDL_WINDOWEVENT_MAXIMIZED:
-        case SDL_WINDOWEVENT_SHOWN:
-            menu_update (ww, wh);
-            dialog_update (ww, wh);
+        case SDL_WINDOWEVENT_SHOWN: {
+            const float corner_x = (t_offX + t_width / 2) * t_size / w_width;
+            const float corner_y = (t_offY + t_height / 2) * t_size / w_height;
+
+            SDL_GetWindowSize (window, &w_width, &w_height);
+
+            t_offX = corner_x * w_width / t_size - t_width / 2;
+            t_offY = corner_y * w_height / t_size - t_height / 2;
+
+            menu_update (w_width, w_height);
+            dialog_update (w_width, w_height);
             render ();
             break;
+        }
         }
         break;
     }

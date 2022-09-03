@@ -109,6 +109,8 @@ main (int argc, char *argv[])
     game_over = false;
     menu.shown = false;
 
+    post_init_video ();
+
     render ();
 
     while (true) {
