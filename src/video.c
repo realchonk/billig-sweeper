@@ -20,9 +20,9 @@
 #include "config.h"
 #include "bsw.h"
 
-static float tiles_scale = 1.5f;
-static int tiles_offX = 5;
-static int tiles_offY = 5;
+static float tiles_scale = 1.0f;
+static int tiles_offX = 0;
+static int tiles_offY = 0;
 static bool panning = false;
 bool shift_pressed = false;
 
@@ -354,7 +354,7 @@ handle_event (const SDL_Event *e)
         mouseX = e->motion.x;
         mouseY = e->motion.y;
 
-        if (e->motion.state == 1) {
+        if (e->motion.state == 1 && !(game_over || menu.shown || dialog_is_open)) {
             panning = true;
             tiles_offX += dx;
             tiles_offY += dy;
