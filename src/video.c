@@ -339,10 +339,13 @@ handle_event (const SDL_Event *e)
         mouseX = e->motion.x;
         mouseY = e->motion.y;
 
+        // Panning
         if (e->motion.state == 1 && !(game_over || menu.shown || dialog_is_open)) {
             panning = true;
             t_offX += (float)dx / t_size;
             t_offY += (float)dy / t_size;
+
+            // Limit the amount of panning.
             t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / t_size) - 1);
             t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / t_size) - 1);
 
@@ -362,6 +365,7 @@ handle_event (const SDL_Event *e)
         const float afterX = (float)(mouseX - t_offX * t_size) / t_size;
         const float afterY = (float)(mouseY - t_offY * t_size) / t_size;
 
+        // Adjust the position of the tiles to have the same relative position.
         t_offX += afterX - preX;
         t_offY += afterY - preY;
 
@@ -378,6 +382,7 @@ handle_event (const SDL_Event *e)
 
             SDL_GetWindowSize (window, &w_width, &w_height);
 
+            // Adjust the center of the playing field.
             t_offX = corner_x * w_width / t_size - t_width / 2;
             t_offY = corner_y * w_height / t_size - t_height / 2;
 
