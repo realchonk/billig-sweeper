@@ -16,6 +16,7 @@
  */
 #include <SDL2/SDL_image.h>
 #include <assert.h>
+#include "dialog.h"
 #include "config.h"
 #include "bsw.h"
 
@@ -251,6 +252,9 @@ render (void)
     if (menu.shown)
         menu_draw ();
 
+    if (dialog_is_open)
+        dialog_draw ();
+
     SDL_RenderPresent (renderer);
 }
 
@@ -281,7 +285,8 @@ handle_event (const SDL_Event *e)
     case SDL_KEYUP:
         switch (e->key.keysym.sym) {
         case SDLK_F1:
-            open_url (GITHUB_URL);
+            dialog_is_open = !dialog_is_open;
+            render ();
             break;
         case SDLK_r:
             if (e->key.keysym.mod & KMOD_CTRL)
@@ -290,6 +295,11 @@ handle_event (const SDL_Event *e)
             render ();
             break;
         case SDLK_ESCAPE:
+            if (dialog_is_open) {
+                dialog_is_open = false;
+                render ();
+                break;
+            }
         case SDLK_m:
             menu.shown = !menu.shown;
             render ();
@@ -308,6 +318,10 @@ handle_event (const SDL_Event *e)
     case SDL_MOUSEBUTTONUP: {
         if (panning) {
             panning = false;
+            break;
+        }
+        if (dialog_is_open) {
+            dialog_handle_event (e);
             break;
         }
         if (menu.shown) {
@@ -373,6 +387,7 @@ handle_event (const SDL_Event *e)
         case SDL_WINDOWEVENT_MAXIMIZED:
         case SDL_WINDOWEVENT_SHOWN:
             menu_update (ww, wh);
+            dialog_update (ww, wh);
             render ();
             break;
         }

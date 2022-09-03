@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2022 Benjamin Stürz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <libgen.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,6 +25,7 @@
 int default_n_mines     = 10;
 int default_width       = 10;
 int default_height      = 10;
+bool first_launch       = false;
 SDL_Color default_color = { .r = 16, .g = 16, .b = 16, .a = 255, };
 
 #define read_val_int(x)                                                 \
@@ -50,6 +67,7 @@ load_settings (void)
     char *filename = make_filename ();
     FILE *file = fopen (filename, "r");
     if (!file) {
+        first_launch = true;
         fprintf (stderr, "Failed to open '%s': %s\n", filename, strerror (errno));
         goto end;
     }

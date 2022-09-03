@@ -32,6 +32,7 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *sprite;
 extern bool game_over, shift_pressed;
 extern time_t start_time, end_time;
+extern bool first_launch;
 
 extern int default_n_mines;
 extern int default_width;

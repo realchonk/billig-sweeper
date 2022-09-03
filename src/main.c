@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include "dialog.h"
 #include "config.h"
 #include "bsw.h"
 
@@ -103,6 +104,7 @@ main (int argc, char *argv[])
         return 1;
 
     menu_init ();
+    dialog_init ();
 
     game_over = false;
     menu.shown = false;

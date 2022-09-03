@@ -41,6 +41,7 @@ sources = [
 	'src/util.c',
 	'src/video.c',
 	'src/config.c',
+	'src/dialog.c',
 	'tomlc99/toml.c',
 ]
 

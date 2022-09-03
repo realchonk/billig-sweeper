@@ -12,7 +12,7 @@ billig-sweeper [-h]
 
 | Key | Actions          |
 |-----|------------------|
-|  F1 | Open Github link |
+|  F1 | Open Help dialog |
 |  m  | Open menu        |
 |  r  | Restart game     |
 |  q  | Quit             |
