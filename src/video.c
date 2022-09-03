@@ -343,6 +343,9 @@ handle_event (const SDL_Event *e)
             panning = true;
             t_offX += (float)dx / t_size;
             t_offY += (float)dy / t_size;
+            t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / t_size) - 1);
+            t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / t_size) - 1);
+
             render ();
         }
         break;
