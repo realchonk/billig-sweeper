@@ -122,7 +122,7 @@ select_tile (struct tile *t)
 static void
 expand_tile (struct tile *t, bool initial)
 {
-    if (!t || t->is_bomb || (!initial && t->status != TILE_NONE && t->status != TILE_MARKED))
+    if (!t || t->is_bomb || (!initial && t->status == TILE_CLICKED))
         return;
     select_tile (t);
     if (t->n_bombs == 0) {
@@ -157,6 +157,9 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
             t->status = TILE_MARKED;
             break;
         case TILE_MARKED:
+            t->status = TILE_MARKED2;
+            break;
+        case TILE_MARKED2:
             t->status = TILE_NONE;
             break;
         case TILE_CLICKED:
@@ -193,6 +196,10 @@ tile_draw (const struct tile *t, const SDL_Rect *rect)
         break;
     case TILE_MARKED:
         srect.x = 64;
+        srect.y = 16;
+        break;
+    case TILE_MARKED2:
+        srect.x = 146;
         srect.y = 16;
         break;
     case TILE_CLICKED:

@@ -22,6 +22,7 @@
 enum tile_status {
     TILE_NONE,                              // The default state of a tile.
     TILE_MARKED,                            // Clicked w/ right-click.
+    TILE_MARKED2,                           // Clicked w/ right-click twice.
     TILE_CLICKED,                           // Clicked w/ left-click.
 };
 

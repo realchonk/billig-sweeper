@@ -394,4 +394,3 @@ handle_event (const SDL_Event *e)
 
     return true;
 }
-
