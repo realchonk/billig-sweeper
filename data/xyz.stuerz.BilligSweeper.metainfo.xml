@@ -42,6 +42,26 @@
   <content_rating type="oars-1.0" />
 
   <releases>
+    <release version="1.2.1" date="2022-09-03">
+      <description>
+        <p>Version 1.2.1</p>
+        <p>- Updated metainfo file</p>
+      </description>
+    </release>
+    <release version="1.2" date="2022-09-02">
+      <description>
+        <p>Version 1.2</p>
+        <p>ChangeLog:</p>
+        <p>- Added panning &amp; zooming</p>
+        <p>- Added config file</p>
+        <p>- Added time counter</p>
+        <p>- Added support for wayland</p>
+        <p>- Changed background color</p>
+        <p>- It's no longer required to press R to restart on Game Over</p>
+        <p>- Fixed issues with icon &amp; .deskop file</p>
+        <p>- It's no longer possible to click on a mine on the first click</p>
+      </description>
+    </release>
     <release version="1.1" date="2022-05-05">
       <description>
         <p>Version 1.1</p>
