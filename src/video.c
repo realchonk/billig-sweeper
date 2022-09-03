@@ -246,12 +246,6 @@ render (void)
     SDL_RenderPresent (renderer);
 }
 
-static bool
-check_off (void)
-{
-    printf ("%d, %f, %f\n", t_size, t_offX, t_offY);
-}
-
 bool
 handle_event (const SDL_Event *e)
 {
@@ -290,6 +284,7 @@ handle_event (const SDL_Event *e)
                 render ();
                 break;
             }
+            SDL_FALLTHROUGH;
         case SDLK_m:
             menu.shown = !menu.shown;
             render ();
