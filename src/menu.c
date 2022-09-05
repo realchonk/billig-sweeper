@@ -28,7 +28,7 @@ static void
 btn_quit_on_move (struct menu_button *btn)
 {
     const float aspect = (float)btn->trect.w / (float)btn->trect.h;
-    btn->mrect.h = menu.rect.h / 8;
+    btn->mrect.h = menu.rect.h / 10;
     btn->mrect.w = (int)(btn->mrect.h * aspect);
     btn->mrect.x = menu.rect.w - btn->mrect.w - 10;
     btn->mrect.y = menu.rect.h - btn->mrect.h - 10;
@@ -46,7 +46,7 @@ static void
 btn_restart_on_move (struct menu_button *btn)
 {
     const float aspect = (float)btn->trect.w / (float)btn->trect.h;
-    btn->mrect.h = menu.rect.h / 8;
+    btn->mrect.h = menu.rect.h / 10;
     btn->mrect.w = (int)(btn->mrect.h * aspect);
     btn->mrect.x = 10;
     btn->mrect.y = menu.rect.h - btn->mrect.h - 10;
@@ -92,10 +92,10 @@ btn_addsub_bomb_on_move (struct menu_button *btn)
 {
     const int id = btn->id - BTN_ADD_BOMB;
 
-    btn->mrect.x = (4 + (id % 2)) * menu.rect.w / 6;
-    btn->mrect.y = 10 + (id / 2) * menu.rect.h / 5;
     btn->mrect.w = menu.rect.w / 6;
-    btn->mrect.h = menu.rect.h / 5;
+    btn->mrect.h = menu.rect.h / 6;
+    btn->mrect.x = (4 + (id % 2)) * btn->mrect.w;
+    btn->mrect.y = 5 + (id / 2) * btn->mrect.h;
 }
 
 static bool
@@ -109,9 +109,9 @@ static void
 lbl_on_move (struct menu_button *btn)
 {
     btn->mrect.w = menu.rect.w / 6;
-    btn->mrect.h = menu.rect.h / 5;
+    btn->mrect.h = menu.rect.h / 6;
     btn->mrect.x = 0;
-    btn->mrect.y = 10 + (btn->id - LBL_BOMB) * btn->mrect.h;
+    btn->mrect.y = 5 + (btn->id - LBL_BOMB) * btn->mrect.h;
 }
 
 static void
@@ -138,11 +138,10 @@ btn_select_on_move (struct menu_button *btn)
 {
     const int n = btn->id - BTN_MIDGET;
 
-    const float aspect = (float)btn->trect.w / (float)btn->trect.h;
-    btn->mrect.h = menu.rect.h / 3;
-    btn->mrect.w = (int)(btn->mrect.h * aspect);
-    btn->mrect.x = menu.rect.w / 3 + (menu.rect.w / 7 * n);
-    btn->mrect.y = menu.rect.h - btn->mrect.h - 10;
+    btn->mrect.w = menu.rect.w / 4;
+    btn->mrect.h = menu.rect.h / 3 - 5;
+    btn->mrect.x = menu.rect.w / 3 * n;
+    btn->mrect.y = menu.rect.h / 2 + 10;
 }
 
 void
@@ -277,16 +276,16 @@ menu_update (int ww, int wh)
 void
 menu_draw (void)
 {
-    const int xt = menu.rect.w / 6, yt = menu.rect.h / 5;
+    const int xt = menu.rect.w / 6, yt = menu.rect.h / 6;
 
     SDL_SetRenderDrawColor (renderer, 192, 192, 192, 255);
     SDL_RenderFillRect (renderer, &menu.rect);
     SDL_SetRenderDrawColor (renderer, 128, 128, 128, 255);
     SDL_RenderDrawRect (renderer, &menu.rect);
 
-    menu_draw_int (default_n_mines, 3, menu.rect.x + xt + 5, yt, xt, yt);
-    menu_draw_int (t_width, 3, menu.rect.x + xt + 5, yt * 2, xt, yt);
-    menu_draw_int (t_height, 3, menu.rect.x + xt + 5, yt * 3, xt, yt);
+    menu_draw_int (default_n_mines, 3, menu.rect.x + xt + 5, yt + 5, xt, yt);
+    menu_draw_int (t_width, 3, menu.rect.x + xt + 5, yt * 2 + 5, xt, yt);
+    menu_draw_int (t_height, 3, menu.rect.x + xt + 5, yt * 3 + 5, xt, yt);
 
     for (size_t i = 0; i < N_BUTTONS; ++i)
         draw_button (&menu.buttons[i]);
