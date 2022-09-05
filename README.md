@@ -29,6 +29,7 @@ AUR packages available: [billig-sweeper](https://aur.archlinux.org/packages/bill
 
 ## Building
 ### Dependencies
+- git (build-time, for downloading tomlc99)
 - meson (build-time)
 - GIMP (only for editing `graphics.xcf`)
 - libSDL2
@@ -66,8 +67,5 @@ This project must be installed to work,
 if you just want to try it out,
 you should add `--prefix=$PWD/tmp` to `meson setup build`.
 
-# TODO
-- Add to the config file
-    - keybinds
-- Add checks for valid values in the menu
-- Add a help menu (for keybinds)
+# Contributing
+It is encouraged to make issues and open pull requests.
