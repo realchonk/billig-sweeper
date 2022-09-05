@@ -36,24 +36,25 @@ AUR packages available: [billig-sweeper](https://aur.archlinux.org/packages/bill
 
 #### Arch/Manjaro
 ```
-sudo pacman -S base-devel meson sdl2 sdl2_image
+sudo pacman -S base-devel git meson sdl2 sdl2_image
 ```
 
 #### Debian/Ubuntu
 ```
 sudo apt update
-sudo apt install build-essential meson libsdl2-dev libsdl2-image-dev
+sudo apt install build-essential git meson libsdl2-dev libsdl2-image-dev
 ```
 
 #### RHEL/Fedora
 ```
-sudo dnf install gcc meson sdl2-devel sdl2_image-devel
+sudo dnf install gcc git meson sdl2-devel sdl2_image-devel
 ```
 
 ### Build process
 ```
 git clone https://github.com/riscygeek/billig-sweeper
 cd billig-sweeper
+git clone https://github.com/cktan/tomlc99 tomlc99
 meson setup build
 meson compile -C build
 meson install -C build
