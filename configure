@@ -21,8 +21,8 @@
 # SOFTWARE.
 
 # Configure PROJ_* variables for your project.
-PROJ_NAME='meson-configure-test'
-PROJ_VERSION='0.1'
+PROJ_NAME='billig-sweeper'
+PROJ_VERSION="$(grep 'version:' meson.build | sed "s/^.*version: '\\(.*\\)',.*$/\\1/")"
 
 # Internal variables.
 VERSION="0.1"
