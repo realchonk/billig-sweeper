@@ -25,7 +25,7 @@ flatpak install xyz.stuerz.BilligSweeper
 ```
 
 ## Arch Linux (AUR)
-AUR packages available: billig-sweeper, billig-sweeper-git
+AUR packages available: [billig-sweeper](https://aur.archlinux.org/packages/billig-sweeper), [billig-sweeper-git](https://aur.archlinux.org/packages/billig-sweeper-git)
 
 ## Building
 ### Dependencies
