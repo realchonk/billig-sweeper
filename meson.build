@@ -1,5 +1,5 @@
 project (
-	'billigsweeper',
+	'billig-sweeper',
 	'c',
 	version: '1.3-rc1',
 	default_options: [

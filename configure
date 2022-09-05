@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Configure PROJ_* variables for your project.
-PROJ_NAME='billig-sweeper'
-PROJ_VERSION="$(grep 'version:' meson.build | sed "s/^.*version: '\\(.*\\)',.*$/\\1/")"
+_project=$(tr '\n' ' ' <meson.build | sed 's/^.*projects\s*(\s*\([^)]*\))/\1/')
+PROJ_NAME=$(echo "$_project" | cut -d',' -f1 | sed "s/^.*'\\([^']\\+\\)'.*\$/\\1/")
+PROJ_VERSION=$(echo "$_project" | sed "s/^.*[^_]version:\\s*'\\([^']\\+\\)'.*\$/\\1/")
 
 # Internal variables.
-VERSION="0.1"
+VERSION="0.3"
 quiet=0
 ninja_args=""
 meson_args=""
@@ -49,10 +49,6 @@ datadir='${datarootdir}'
 infodir='${datarootdir}/info'
 localedir='${datarootdir}/locale'
 mandir='${datarootdir}/man'
-build=''
-host=''
-target=''
-cross_file=''
 
 # Variables copied (stolen) from an autoconf-generated configure script.
 as_cr_letters='abcdefghijklmnopqrstuvwxyz'
@@ -99,6 +95,7 @@ Configuration:
   -q, --quiet, --silent   do not print \`checking ...\` messages
   -n, --no-create         do not create output files
   --srcdir=DIR            find the sources in DIR
+  --update-configure      update the configure script itself
 
 Installation directories:
   --prefix=PREFIX         install files in PREFIX
@@ -119,11 +116,6 @@ Fine tuning of the installation directories:
   --localedir=DIR         locale-dependent data
   --mandir=DIR            man documentation
 
-System types:
-  --build=BUILD           configure for building on BUILD
-  --host=HOST             cross-compile to build programs to run on HOST
-  --target=TARGET         configure for building compilers for TARGET
-
 Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
@@ -141,7 +133,6 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-buildtype=TYPE   set build type (one of plain, debug, debugoptimized, release, minsize)
   --with-optimization=OPT set optimization level to OPT
-  --with-cross-file=FILE  compile using FILE as a cross-file
 EOF
         # print_packages
         exit 0
@@ -176,15 +167,6 @@ EOF
         option="$(printf '%s\n' "${arg}" | sed 's/^--\([^=]\+\)=.*$/\1/;s/-/_/g')"
         value="$(printf '%s\n' "${arg}" | sed 's/^[^=]\+=\(.*\)$/\1/')"
         eval "${option}=\"$(printf "%q\n" "${value}")\""
-        ;;
-    --build=*)
-        build="$(printf '%s\n' "$arg" | sed 's/^--build=//')"
-        ;;
-    --host=*)
-        host="$(printf '%s\n' "$arg" | sed 's/^--host=//')"
-        ;;
-    --target=*)
-        target="$(printf '%s\n' "$arg" | sed 's/^--target=//')"
         ;;
     --enable-silent-rules|--enable-silent-rules=yes)
         ninja_args=""
@@ -222,9 +204,6 @@ EOF
     --with-buildtype=*|--with-optimization=*)
         append_arg "$(printf "%s\n" "${arg}" | sed 's/with-//')"
         ;;
-    --with-cross-file=*)
-        cross_file="$(printf '%s\n' "$arg" | sed 's/^--with-cross-file=//')"
-        ;;
     --with-*=*)
         append_arg "$(printf '%s\n' "${arg}" | sed 's/^--with-/-D/')"
         ;;
@@ -236,6 +215,21 @@ EOF
         option="$(printf '%s\n' "${arg}" | sed 's/^--without-//')"
         append_arg "-D${option}=false"
         ;;
+	--update-configure)
+		set -e
+		_url="https://raw.githubusercontent.com/riscygeek/meson-configure/master/configure"
+		if command -v curl >/dev/null; then
+			curl -sLo configure.new "$_url"
+		elif command -v wget >/dev/null; then
+			wget -qO configure.newe "$_url"
+		else
+			eprintf 'configure: please make sure that either wget, or curl is installed.\n'
+			exit 1
+		fi
+		chmod +x configure.new
+		mv configure.new configure
+		exit 0
+		;;
     *=*)
         name="$(printf '%s\n' "${arg}" | sed 's/^\([^=]*\)=.*$/\1/')"
         value="$(printf '%s\n' "${arg}" | sed 's/^[^=]*=\(.*\)$/\1/')"
@@ -287,10 +281,6 @@ for name in prefix bindir sbindir libexecdir datadir sysconfdir         \
     append_arg "--${name}=${value}"
 done
 
-if [ -n "$cross_file" ] && { [ -n "$build" ] || [ -n "$host" ] || [ -n "$target" ]; }; then
-    eprintf "Either a cross-file or system types should be used."
-fi
-
 ################################################################################
 ############################## Checking the system #############################
 ################################################################################
@@ -319,15 +309,6 @@ fi
 
 meson="$(check_for meson)" || exit 1
 ninja="$(check_for ninja)" || exit 1
-
-################################################################################
-############################ Generating a cross file ###########################
-################################################################################
-
-if [ -n "$cross_file" ]; then
-    cp "$cross_file" "${builddir}/cross_file"
-    append_arg "--cross-file=$cross_file"
-fi
 
 ################################################################################
 ############################ Generating the Makefile ###########################
