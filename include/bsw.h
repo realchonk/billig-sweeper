@@ -38,6 +38,7 @@ extern int default_n_mines;
 extern int default_width;
 extern int default_height;
 extern SDL_Color default_color;
+extern int default_presets[3][3]; // [3; [width, height, n_mines]]
 
 bool init_SDL2 (void);
 void quit_SDL2 (void);

@@ -27,6 +27,11 @@ int default_width       = 10;
 int default_height      = 10;
 bool first_launch       = false;
 SDL_Color default_color = { .r = 16, .g = 16, .b = 16, .a = 255, };
+int default_presets[3][3] = {
+    {  8,  8, 10 },
+    { 16, 16, 40 },
+    { 30, 16, 99 },
+};
 
 #define read_val_int(x)                                                 \
 x = toml_int_in (game, #x);                                             \
@@ -92,6 +97,7 @@ load_settings (void)
     read_val_int(width);
     read_val_int(height);
 
+    // Read the background color.
     toml_array_t *color = toml_array_in (game, "color");
     if (color != NULL) {
         int rgb[3];
@@ -110,6 +116,27 @@ load_settings (void)
     } else {
 invalid_color:
         fprintf (stderr, "Missing or invalid field 'Game.color' in '%s'\n", filename);
+    }
+
+    // Read the presets.
+    toml_array_t *presets = toml_array_in (game, "presets");
+    if (presets != NULL) {
+        for (int p = 0; p < 3; ++p) {
+            toml_array_t *preset = toml_array_at (presets, p);
+            if (!preset)
+                goto invalid_presets;
+            for (int i = 0; i < 3; ++i) {
+                toml_datum_t v = toml_int_at (preset, i);
+                if (v.ok) {
+                    default_presets[p][i] = v.u.i;
+                } else {
+                    goto invalid_presets;
+                }
+            }
+        }
+    } else {
+invalid_presets:
+        fprintf (stderr, "Missing or invalid field 'Game.presets' in '%s'\n", filename);
     }
 
     toml_free (conf);
@@ -137,6 +164,11 @@ save_settings (void)
     fprintf (file, "\twidth = %d\n", default_width);
     fprintf (file, "\theight = %d\n", default_height);
     fprintf (file, "\tcolor = [ %d, %d, %d ]\n", default_color.r, default_color.g, default_color.b);
+    fputs ("\tpresets = [\n", file);
+    fprintf (file, "\t\t[ %d, %d, %d ],\n", default_presets[0][0], default_presets[0][1], default_presets[0][2]);
+    fprintf (file, "\t\t[ %d, %d, %d ],\n", default_presets[1][0], default_presets[1][1], default_presets[1][2]);
+    fprintf (file, "\t\t[ %d, %d, %d ],\n", default_presets[2][0], default_presets[2][1], default_presets[2][2]);
+    fputs ("\t]\n", file);
     fclose (file);
     free (filename);
 }

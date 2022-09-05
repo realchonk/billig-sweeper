@@ -123,16 +123,11 @@ draw_button (const struct menu_button *btn)
 static bool
 btn_select_on_click(struct menu_button *btn)
 {
-    const int values[3][3] = {
-        {  8,  8, 10 },
-        { 16, 16, 40 },
-        { 30, 16, 99 },
-    };
     const int n = btn->id - BTN_MIDGET;
 
-    default_width   = values[n][0];
-    default_height  = values[n][1];
-    default_n_mines = values[n][2];
+    default_width   = default_presets[n][0];
+    default_height  = default_presets[n][1];
+    default_n_mines = default_presets[n][2];
     init_tiles ();
     game_over = false;
     save_settings ();
