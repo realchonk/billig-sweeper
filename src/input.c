@@ -103,15 +103,18 @@ pan (SDL_Point delta)
     render ();
 }
 
+static SDL_TimerID touch_timerID = 0;
+static SDL_Point touch_pos;
+
 static Uint32
 cb_touch (Uint32 interval, void *arg)
 {
     (void)interval;
-    const SDL_Point *p = arg;
-
+    (void)arg;
     // TODO: haptic feedback
 
-    click (*p, SDL_BUTTON_RIGHT);
+    click (touch_pos, SDL_BUTTON_RIGHT);
+    touch_timerID = 0;
     return 0;
 }
 
@@ -120,8 +123,6 @@ handle_event (const SDL_Event *e)
 {
     static int mouseX, mouseY, num_fingers = 0;
     static bool space_pressed = false;
-    static SDL_TimerID touch_timerID = 0;
-    static SDL_Point touch_pos;
 
     switch (e->type) {
     // Keyboard-related
@@ -204,7 +205,7 @@ handle_event (const SDL_Event *e)
         } else if (num_fingers == 1) {
             touch_pos.x = e->tfinger.x * w_width;
             touch_pos.y = e->tfinger.y * w_height;
-            touch_timerID = SDL_AddTimer (TOUCH_DELAY, &cb_touch, &touch_pos);
+            touch_timerID = SDL_AddTimer (TOUCH_DELAY, &cb_touch, NULL);
         }
         break;
     case SDL_FINGERUP:
