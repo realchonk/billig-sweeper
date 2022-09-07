@@ -246,11 +246,26 @@ render (void)
     SDL_RenderPresent (renderer);
 }
 
+static void
+click (int ax, int ay, int button)
+{
+    const int tx = (ax - t_offX * t_size) / t_size;
+    const int ty = (ay - t_offY * t_size) / t_size;
+
+    if (!generated)
+        generate_tiles (tx, ty);
+
+    struct tile *t = get_tile (tx, ty);
+
+    if (t) {
+        tile_click (t, button);
+    }
+}
+
 bool
 handle_event (const SDL_Event *e)
 {
     static int mouseX, mouseY;
-    struct tile *t;
 
     switch (e->type) {
     case SDL_QUIT:
@@ -321,16 +336,7 @@ handle_event (const SDL_Event *e)
             break;
         }
 
-
-        const int tx = (e->button.x - t_offX * t_size) / t_size;
-        const int ty = (e->button.y - t_offY * t_size) / t_size;
-        if (!generated)
-            generate_tiles (tx, ty);
-        t = get_tile (tx, ty);
-        if (t) {
-            tile_click (t, e->button.button);
-            break;
-        }
+        click (e->button.x, e->button.y, e->button.button);
         break;
     }
     case SDL_MOUSEMOTION: {
