@@ -22,7 +22,11 @@
 #include "util.h"
 #include "bsw.h"
 
-#define TOUCH_DELAY 500
+// TODO: Make these configurable
+#define TOUCH_DELAY 150
+#define HAPTIC_INTENSITY 1.0f
+#define HAPTIC_DURATION 100
+
 #define EV_LONG_CLICK 1
 
 #define stop_timer(tid)         \
@@ -246,7 +250,7 @@ handle_event (const SDL_Event *e)
             touch_timerID = 0;
 
             if (haptic) {
-                SDL_HapticRumblePlay (haptic, 0.5f, 250);
+                SDL_HapticRumblePlay (haptic, HAPTIC_INTENSITY, HAPTIC_DURATION);
             }
             break;
         default:
