@@ -8,6 +8,7 @@ finish-args:
     - --socket=fallback-x11
     - --socket=x11
     - --device=dri
+    - --device=all
     - --share=ipc
     - --env=XDG_CONFIG_DIR=.var/app/xyz.stuerz.BilligSweeper/config
 
