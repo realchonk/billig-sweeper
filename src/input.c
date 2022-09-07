@@ -23,6 +23,7 @@
 #include "bsw.h"
 
 #define TOUCH_DELAY 500
+#define EV_LONG_CLICK 1
 
 #define stop_timer(tid)         \
 do {                            \
@@ -103,9 +104,6 @@ pan (SDL_Point delta)
     render ();
 }
 
-static SDL_TimerID touch_timerID = 0;
-static SDL_Point touch_pos;
-
 static Uint32
 cb_touch (Uint32 interval, void *arg)
 {
@@ -113,8 +111,12 @@ cb_touch (Uint32 interval, void *arg)
     (void)arg;
     // TODO: haptic feedback
 
-    click (touch_pos, SDL_BUTTON_RIGHT);
-    touch_timerID = 0;
+    SDL_Event e;
+    SDL_zero (e);
+    e.user.type = SDL_USEREVENT;
+    e.user.code = EV_LONG_CLICK;
+
+    SDL_PushEvent (&e);
     return 0;
 }
 
@@ -123,6 +125,8 @@ handle_event (const SDL_Event *e)
 {
     static int mouseX, mouseY, num_fingers = 0;
     static bool space_pressed = false;
+    static SDL_TimerID touch_timerID = 0;
+    static SDL_Point touch_pos;
 
     switch (e->type) {
     // Keyboard-related
@@ -234,6 +238,17 @@ handle_event (const SDL_Event *e)
             stop_timer (touch_timerID);
             const SDL_Point p = { e->mgesture.x * w_width, e->mgesture.y * w_height };
             zoom (p, 1.0f + e->mgesture.dDist * 5.0f);
+        }
+        break;
+    case SDL_USEREVENT:
+        switch (e->user.code) {
+        case EV_LONG_CLICK:
+            click (touch_pos, SDL_BUTTON_RIGHT);
+            touch_timerID = 0;
+            break;
+        default:
+            printf ("Unhandled user event: %d\n", e->user.code);
+            break;
         }
         break;
 
