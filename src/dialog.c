@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "dialog.h"
+#include "util.h"
 #include "bsw.h"
 
 bool dialog_is_open = false;
@@ -49,6 +50,7 @@ dialog_update (int ww, int wh)
 bool
 dialog_click (SDL_Point p, int button)
 {
+    (void)p;
     switch (button) {
     case SDL_BUTTON_LEFT:
         dialog_is_open = false;

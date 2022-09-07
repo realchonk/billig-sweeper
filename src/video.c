@@ -18,6 +18,9 @@
 #include <assert.h>
 #include "dialog.h"
 #include "config.h"
+#include "menu.h"
+#include "tile.h"
+#include "util.h"
 #include "bsw.h"
 
 static int t_size;

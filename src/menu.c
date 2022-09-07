@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "menu.h"
+#include "tile.h"
+#include "util.h"
 #include "bsw.h"
 
 struct menu menu;
@@ -303,4 +306,5 @@ menu_click (SDL_Point p, int button)
             return v;
         }
     }
+    return true;
 }

@@ -16,7 +16,7 @@
  */
 #ifndef FILE_BSW_MENU_H
 #define FILE_BSW_MENU_H
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
 #include <stdbool.h>
 
 struct menu;

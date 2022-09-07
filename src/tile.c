@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "tile.h"
+#include "util.h"
 #include "bsw.h"
 
 struct tile *tiles = NULL;

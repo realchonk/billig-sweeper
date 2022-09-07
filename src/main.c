@@ -21,6 +21,8 @@
 #include <time.h>
 #include "dialog.h"
 #include "config.h"
+#include "tile.h"
+#include "menu.h"
 #include "bsw.h"
 
 SDL_Window *window;

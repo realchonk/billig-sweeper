@@ -20,9 +20,6 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <time.h>
-#include "menu.h"
-#include "tile.h"
-#include "util.h"
 
 #define TITLE "Billig Sweeper"
 #define GITHUB_URL "https://github.com/riscygeek/billig-sweeper"
