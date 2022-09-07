@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include "toml.h"
+#include "util.h"
 #include "tile.h"
 #include "bsw.h"
 

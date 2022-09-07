@@ -21,6 +21,7 @@
 #include <time.h>
 #include "dialog.h"
 #include "config.h"
+#include "video.h"
 #include "tile.h"
 #include "menu.h"
 #include "bsw.h"
@@ -42,7 +43,7 @@ reset_game (void)
 noreturn void
 relaunch (void)
 {
-    quit_SDL2 ();
+    video_quit ();
     free (tiles);
     execv ("/proc/self/exe", args);
     _exit (1);
@@ -102,7 +103,7 @@ main (int argc, char *argv[])
 
     // Game initialization.
     srand (time (NULL));
-    if (!init_tiles () || !init_SDL2 ())
+    if (!init_tiles () || !video_init ())
         return 1;
 
     menu_init ();
@@ -111,7 +112,7 @@ main (int argc, char *argv[])
     game_over = false;
     menu.shown = false;
 
-    post_init_video ();
+    video_post_init ();
 
     render ();
 
@@ -122,7 +123,7 @@ main (int argc, char *argv[])
             break;
     }
 
-    quit_SDL2 ();
+    video_quit ();
     free (tiles);
     return 0;
 }

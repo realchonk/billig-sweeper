@@ -40,6 +40,7 @@ sources = [
 	'src/tile.c',
 	'src/util.c',
 	'src/video.c',
+	'src/input.c',
 	'src/config.c',
 	'src/dialog.c',
 	'tomlc99/toml.c',

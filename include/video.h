@@ -14,31 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FILE_BSW_H
-#define FILE_BSW_H
-#include <stdnoreturn.h>
-#include <SDL2/SDL_pixels.h>
+#ifndef FILE_BSW_VIDEO_H
+#define FILE_BSW_VIDEO_H
+#include <SDL2/SDL.h>
 #include <stdbool.h>
-#include <time.h>
 
-#define TITLE "Billig Sweeper"
-#define GITHUB_URL "https://github.com/riscygeek/billig-sweeper"
+extern float t_offX, t_offY;
+extern int w_width, w_height, t_size;
+extern bool shift_pressed;
 
-extern bool game_over;
-extern time_t start_time, end_time;
-extern bool first_launch;
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern SDL_Texture *sprite;
 
-extern int default_n_mines;
-extern int default_width;
-extern int default_height;
-extern SDL_Color default_color;
-extern int default_presets[3][3]; // [3; [width, height, n_mines]]
+bool video_init (void);
+void video_quit (void);
+void video_post_init (void);
 
-void reset_game (void);
+void render (void);
+bool handle_event (const SDL_Event *);
 
-void load_settings (void);
-void save_settings (void);
-
-noreturn void relaunch (void);
-
-#endif // FILE_BSW_H
+#endif // FILE_BSW_VIDEO_H

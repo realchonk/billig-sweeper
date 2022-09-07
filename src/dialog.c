@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "dialog.h"
+#include "video.h"
 #include "util.h"
 #include "bsw.h"
 
