@@ -137,7 +137,7 @@ handle_event (const SDL_Event *e)
         mouseY = e->motion.y;
 
         // Panning
-        if ((space_pressed || e->motion.state == SDL_BUTTON_MIDDLE) && !(game_over || menu.shown || dialog_is_open)) {
+        if ((space_pressed || e->motion.state == SDL_BUTTON_MIDDLE) && !(menu.shown || dialog_is_open)) {
             t_offX += (float)dx / t_size;
             t_offY += (float)dy / t_size;
 
