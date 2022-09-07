@@ -328,7 +328,7 @@ handle_event (const SDL_Event *e)
             generate_tiles (tx, ty);
         t = get_tile (tx, ty);
         if (t) {
-            tile_handle_event (t, e);
+            tile_click (t, e->button.button);
             break;
         }
         break;

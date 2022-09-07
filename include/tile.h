@@ -44,7 +44,7 @@ bool tile_is_bomb (int x, int y);
 void generate_tiles (int x, int y);
 void reset_tiles (void);
 bool init_tiles (void);
-void tile_handle_event (struct tile *, const SDL_Event *);
+void tile_click (struct tile *, int which);
 void tile_draw (const struct tile *, const SDL_Rect *);
 
 #define all_selected() (n_selected == (t_width * t_height - n_bombs))

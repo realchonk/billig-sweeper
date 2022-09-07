@@ -138,9 +138,9 @@ expand_tile (struct tile *t, bool initial)
 }
 
 void
-tile_handle_event (struct tile *t, const SDL_Event *e)
+tile_click (struct tile *t, int which)
 {
-    switch (e->button.button) {
+    switch (which) {
     case SDL_BUTTON_LEFT:
         select_tile (t);
         if (t->is_bomb) {
@@ -148,6 +148,11 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
             end_time = time (NULL);
         } else {
             expand_tile (t, true);
+        }
+
+        if (all_selected ()) {
+            game_over = true;
+            end_time = time (NULL);
         }
         render ();
         break;
@@ -167,12 +172,6 @@ tile_handle_event (struct tile *t, const SDL_Event *e)
         }
         render ();
         break;
-    }
-
-    if (all_selected ()) {
-        game_over = true;
-        end_time = time (NULL);
-        render ();
     }
 }
 
