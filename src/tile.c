@@ -17,7 +17,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <stdio.h>
 #include "video.h"
 #include "tile.h"
@@ -151,11 +150,7 @@ tile_click (struct tile *t, int which)
             game_over = true;
             end_time = time (NULL);
             if (haptic) {
-                SDL_HapticRumblePlay (haptic, 1.0f, 100);
-                usleep (300);
-                SDL_HapticRumblePlay (haptic, 1.0f, 100);
-                usleep (200);
-                SDL_HapticRumblePlay (haptic, 1.0f, 200);
+                SDL_HapticRumblePlay (haptic, 0.3f, 500);
             }
         } else {
             expand_tile (t, true);
