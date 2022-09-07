@@ -22,6 +22,16 @@
 #include "util.h"
 #include "bsw.h"
 
+#define TOUCH_DELAY 500
+
+#define stop_timer(tid)         \
+do {                            \
+    if (tid) {                  \
+        SDL_RemoveTimer (tid);  \
+        tid = 0;                \
+    }                           \
+} while (0)
+
 static bool
 click (SDL_Point p, int button)
 {
@@ -89,15 +99,28 @@ pan (SDL_Point delta)
     render ();
 }
 
+static Uint32
+cb_touch (Uint32 interval, void *arg)
+{
+    (void)interval;
+    const SDL_Point *p = arg;
+
+    // TODO: haptic feedback
+
+    click (*p, SDL_BUTTON_RIGHT);
+    return 0;
+}
+
 bool
 handle_event (const SDL_Event *e)
 {
-    static int mouseX, mouseY;
+    static int mouseX, mouseY, num_fingers = 0;
     static bool space_pressed = false;
+    static SDL_TimerID touch_timerID = 0;
+    static SDL_Point touch_pos;
 
     switch (e->type) {
-    case SDL_QUIT:
-        return false;
+    // Keyboard-related
     case SDL_KEYDOWN:
         switch (e->key.keysym.sym) {
         case SDLK_LSHIFT:
@@ -141,12 +164,17 @@ handle_event (const SDL_Event *e)
             break;
         }
         break;
-    case SDL_MOUSEBUTTONUP: {
-        const SDL_Point p = { e->button.x, e->button.y };
 
+    // Mouse-related
+    case SDL_MOUSEBUTTONUP: {
+        if (e->button.which == SDL_TOUCH_MOUSEID)
+            break;
+        const SDL_Point p = { e->button.x, e->button.y };
         return click (p, e->button.button);
     }
-    case SDL_MOUSEMOTION: {
+    case SDL_MOUSEMOTION:
+        if (e->button.which == SDL_TOUCH_MOUSEID)
+            break;
         mouseX = e->motion.x;
         mouseY = e->motion.y;
 
@@ -156,12 +184,58 @@ handle_event (const SDL_Event *e)
             pan (delta);
         }
         break;
-    }
     case SDL_MOUSEWHEEL: {
+        if (e->button.which == SDL_TOUCH_MOUSEID)
+            break;
         const SDL_Point p = { mouseX, mouseY };
         zoom (p, 1.0f + e->wheel.preciseY * 0.1f);
         break;
     }
+
+    // Touchscreen-related
+    case SDL_FINGERDOWN:
+        ++num_fingers;
+        if (touch_timerID) {
+            stop_timer (touch_timerID);
+        } else if (num_fingers == 1) {
+            touch_pos.x = e->tfinger.x * w_width;
+            touch_pos.y = e->tfinger.y * w_height;
+            touch_timerID = SDL_AddTimer (TOUCH_DELAY, &cb_touch, &touch_pos);
+        }
+        break;
+    case SDL_FINGERUP:
+        --num_fingers;
+        if (touch_timerID) {
+            stop_timer (touch_timerID);
+        } else {
+            const SDL_Point p = { e->tfinger.x * w_width, e->tfinger.y * w_height };
+            click (p, SDL_BUTTON_LEFT);
+        }
+        break;
+    case SDL_FINGERMOTION:
+        if (num_fingers == 1) {
+            const float dx = e->tfinger.dx;
+            const float dy = e->tfinger.dy;
+            const float dist = sqrtf (dx*dx + dy*dy);
+            if (dist < 0.003f)
+                break;
+
+            stop_timer (touch_timerID);
+            const SDL_Point p = { dx * w_width, dy * w_height };
+            pan (p);
+        }
+        break;
+    case SDL_MULTIGESTURE:
+        if (e->mgesture.numFingers == 2) {
+            stop_timer (touch_timerID);
+            const SDL_Point p = { e->mgesture.x * w_width, e->mgesture.y * w_height };
+            zoom (p, 1.0f + e->mgesture.dDist * 5.0f);
+        }
+        break;
+
+    // Other
+    case SDL_QUIT:
+        return false;
     case SDL_WINDOWEVENT:
         switch (e->window.event) {
         case SDL_WINDOWEVENT_RESIZED:

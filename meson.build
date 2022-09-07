@@ -8,6 +8,8 @@ project (
 	]
 )
 
+cc = meson.get_compiler('c')
+
 prefix = get_option ('prefix')
 datadir = get_option ('datadir')
 icondir = datadir / 'icons' / 'hicolor' / '256x256' / 'apps'
@@ -25,6 +27,7 @@ configure_file (
 
 # Search for necessary dependencies.
 depends = [
+	cc.find_library('m', required: false),
 	dependency ('sdl2'),
 	dependency ('SDL2_image'),
 ]
