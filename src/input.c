@@ -54,21 +54,37 @@ click (SDL_Point p, int button)
 }
 
 static void
-zoom (int ax, int ay, float factor)
+zoom (SDL_Point p, float factor)
 {
-    const float preX = (float)(ax - t_offX * t_size) / t_size;
-    const float preY = (float)(ay - t_offY * t_size) / t_size;
+    const float preX = (float)(p.x - t_offX * t_size) / t_size;
+    const float preY = (float)(p.y - t_offY * t_size) / t_size;
 
     // Zoom in/out with the scroll wheel.
     const float mx = my_min (w_width / 5, w_height / 5);
     t_size = my_clamp (t_size * factor, 10.0f, mx);
 
-    const float afterX = (float)(ax - t_offX * t_size) / t_size;
-    const float afterY = (float)(ay - t_offY * t_size) / t_size;
+    const float afterX = (float)(p.x - t_offX * t_size) / t_size;
+    const float afterY = (float)(p.y - t_offY * t_size) / t_size;
 
     // Adjust the position of the tiles to have the same relative position.
     t_offX += afterX - preX;
     t_offY += afterY - preY;
+
+    render ();
+}
+
+static void
+pan (SDL_Point delta)
+{
+    if (menu.shown || dialog_is_open)
+        return;
+
+    t_offX += (float)delta.x / t_size;
+    t_offY += (float)delta.y / t_size;
+
+    // Limit the amount of panning.
+    t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / t_size) - 1);
+    t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / t_size) - 1);
 
     render ();
 }
@@ -131,26 +147,19 @@ handle_event (const SDL_Event *e)
         return click (p, e->button.button);
     }
     case SDL_MOUSEMOTION: {
-        const int dx = e->motion.xrel;
-        const int dy = e->motion.yrel;
         mouseX = e->motion.x;
         mouseY = e->motion.y;
 
         // Panning
-        if ((space_pressed || e->motion.state == SDL_BUTTON_MIDDLE) && !(menu.shown || dialog_is_open)) {
-            t_offX += (float)dx / t_size;
-            t_offY += (float)dy / t_size;
-
-            // Limit the amount of panning.
-            t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / t_size) - 1);
-            t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / t_size) - 1);
-
-            render ();
+        if (space_pressed || e->motion.state == SDL_BUTTON_MIDDLE) {
+            const SDL_Point delta = { e->motion.xrel, e->motion.yrel };
+            pan (delta);
         }
         break;
     }
     case SDL_MOUSEWHEEL: {
-        zoom (mouseX, mouseY, 1.0f + e->wheel.preciseY * 0.1f);
+        const SDL_Point p = { mouseX, mouseY };
+        zoom (p, 1.0f + e->wheel.preciseY * 0.1f);
         break;
     }
     case SDL_WINDOWEVENT:
