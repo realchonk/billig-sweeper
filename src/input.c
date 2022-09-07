@@ -205,12 +205,11 @@ handle_event (const SDL_Event *e)
         break;
     case SDL_FINGERUP:
         --num_fingers;
-        if (touch_timerID) {
-            stop_timer (touch_timerID);
-        } else {
+        if (touch_timerID != 0 && num_fingers == 0) {
             const SDL_Point p = { e->tfinger.x * w_width, e->tfinger.y * w_height };
             click (p, SDL_BUTTON_LEFT);
         }
+        stop_timer (touch_timerID);
         break;
     case SDL_FINGERMOTION:
         if (num_fingers == 1) {
