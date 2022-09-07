@@ -109,7 +109,6 @@ cb_touch (Uint32 interval, void *arg)
 {
     (void)interval;
     (void)arg;
-    // TODO: haptic feedback
 
     SDL_Event e;
     SDL_zero (e);
@@ -245,6 +244,10 @@ handle_event (const SDL_Event *e)
         case EV_LONG_CLICK:
             click (touch_pos, SDL_BUTTON_RIGHT);
             touch_timerID = 0;
+
+            if (haptic) {
+                SDL_HapticRumblePlay (haptic, 0.5f, 250);
+            }
             break;
         default:
             printf ("Unhandled user event: %d\n", e->user.code);

@@ -26,6 +26,7 @@ extern bool shift_pressed;
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_Texture *sprite;
+extern SDL_Haptic *haptic;
 
 bool video_init (void);
 void video_quit (void);

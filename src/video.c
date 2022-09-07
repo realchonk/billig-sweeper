@@ -24,6 +24,7 @@
 #include "util.h"
 #include "bsw.h"
 
+SDL_Haptic *haptic;
 float t_offX, t_offY, t_size;
 int w_width, w_height;
 bool shift_pressed = false;
@@ -74,6 +75,11 @@ video_init ()
         IMG_Quit ();
         SDL_Quit ();
         return false;
+    }
+
+    haptic = SDL_HapticOpen (0);
+    if (haptic) {
+        SDL_HapticRumbleInit (haptic);
     }
 
     // Load the texture sprite/atlas.
