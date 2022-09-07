@@ -22,7 +22,6 @@
 
 static int t_size;
 static float t_offX, t_offY;
-static bool panning = false;
 static int w_width, w_height;
 bool shift_pressed = false;
 
@@ -286,6 +285,7 @@ bool
 handle_event (const SDL_Event *e)
 {
     static int mouseX, mouseY;
+    static bool space_pressed = false;
 
     switch (e->type) {
     case SDL_QUIT:
@@ -294,6 +294,9 @@ handle_event (const SDL_Event *e)
         switch (e->key.keysym.sym) {
         case SDLK_LSHIFT:
             shift_pressed = true;
+            break;
+        case SDLK_SPACE:
+            space_pressed = true;
             break;
         default:
             if (menu.shown && !menu_handle_event (e))
@@ -329,6 +332,9 @@ handle_event (const SDL_Event *e)
         case SDLK_LSHIFT:
             shift_pressed = false;
             break;
+        case SDLK_SPACE:
+            space_pressed = false;
+            break;
         default:
             if (menu.shown && !menu_handle_event (e))
                 return false;
@@ -336,10 +342,6 @@ handle_event (const SDL_Event *e)
         }
         break;
     case SDL_MOUSEBUTTONUP: {
-        if (panning) {
-            panning = false;
-            break;
-        }
         if (dialog_is_open) {
             dialog_handle_event (e);
             break;
@@ -366,8 +368,7 @@ handle_event (const SDL_Event *e)
         mouseY = e->motion.y;
 
         // Panning
-        if (e->motion.state == 1 && !(game_over || menu.shown || dialog_is_open)) {
-            panning = true;
+        if ((space_pressed || e->motion.state == SDL_BUTTON_MIDDLE) && !(game_over || menu.shown || dialog_is_open)) {
             t_offX += (float)dx / t_size;
             t_offY += (float)dy / t_size;
 
