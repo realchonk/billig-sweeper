@@ -1,7 +1,7 @@
 project (
 	'billig-sweeper',
 	'c',
-	version: '1.3-rc1',
+	version: '1.3-rc2',
 	default_options: [
 		'warning_level=3',
 		'c_std=gnu11',
