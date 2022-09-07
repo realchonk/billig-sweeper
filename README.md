@@ -8,14 +8,33 @@ This is a just another simple minesweeper clone.
 billig-sweeper [-h]
 ```
 
-## Keybindings
+## Input
 
-| Key | Actions          |
-|-----|------------------|
-|  F1 | Open Help dialog |
-|  m  | Open menu        |
-|  r  | Restart game     |
-|  q  | Quit             |
+### Keyboard
+| Action | Result           |
+|--------|------------------|
+| F1     | Open Help dialog |
+| m      | Open menu        |
+| r      | Restart game     |
+| q      | Quit             |
+
+### Mouse
+| Action                | Result  |
+|-----------------------|---------|
+| Left-click            | Select  |
+| Right-click           | Mark    |
+| Middle-click + Motion | Panning |
+| Space + Mouse Motion  | Panning |
+| Scroll Wheel          | Zooming |
+
+### Touchscreen
+| Action     | Result  |
+|------------|---------|
+| Short Tap  | Select  |
+| Long Tap   | Mark    |
+| Swipe      | Panning |
+| Pinching   | Zooming |
+
 
 # Installation
 
