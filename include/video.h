@@ -19,8 +19,8 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
-extern float t_offX, t_offY;
-extern int w_width, w_height, t_size;
+extern float t_offX, t_offY, t_size;
+extern int w_width, w_height;
 extern bool shift_pressed;
 
 extern SDL_Window *window;

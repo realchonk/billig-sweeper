@@ -47,8 +47,9 @@ click (SDL_Point p, int button)
         return true;
     }
 
-    const int tx = (p.x - t_offX * t_size) / t_size;
-    const int ty = (p.y - t_offY * t_size) / t_size;
+    const int ts = t_size;
+    const int tx = (p.x - t_offX * ts) / ts;
+    const int ty = (p.y - t_offY * ts) / ts;
 
     if (!generated)
         generate_tiles (tx, ty);
@@ -66,15 +67,17 @@ click (SDL_Point p, int button)
 static void
 zoom (SDL_Point p, float factor)
 {
-    const float preX = (float)(p.x - t_offX * t_size) / t_size;
-    const float preY = (float)(p.y - t_offY * t_size) / t_size;
+    int ts = t_size;
+    const float preX = (float)(p.x - t_offX * ts) / ts;
+    const float preY = (float)(p.y - t_offY * ts) / ts;
 
     // Zoom in/out with the scroll wheel.
     const float mx = my_min (w_width / 5, w_height / 5);
     t_size = my_clamp (t_size * factor, 10.0f, mx);
+    ts = (int)t_size;
 
-    const float afterX = (float)(p.x - t_offX * t_size) / t_size;
-    const float afterY = (float)(p.y - t_offY * t_size) / t_size;
+    const float afterX = (float)(p.x - t_offX * ts) / ts;
+    const float afterY = (float)(p.y - t_offY * ts) / ts;
 
     // Adjust the position of the tiles to have the same relative position.
     t_offX += afterX - preX;
@@ -89,12 +92,13 @@ pan (SDL_Point delta)
     if (menu.shown || dialog_is_open)
         return;
 
-    t_offX += (float)delta.x / t_size;
-    t_offY += (float)delta.y / t_size;
+    const int ts = t_size;
+    t_offX += (float)delta.x / ts;
+    t_offY += (float)delta.y / ts;
 
     // Limit the amount of panning.
-    t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / t_size) - 1);
-    t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / t_size) - 1);
+    t_offX = my_clamp (t_offX, -t_width + 1, ((float)w_width / ts) - 1);
+    t_offY = my_clamp (t_offY, -t_height + 1, ((float)w_height / ts) - 1);
 
     render ();
 }
@@ -240,14 +244,15 @@ handle_event (const SDL_Event *e)
         case SDL_WINDOWEVENT_RESIZED:
         case SDL_WINDOWEVENT_MAXIMIZED:
         case SDL_WINDOWEVENT_SHOWN: {
-            const float corner_x = (t_offX + t_width / 2) * t_size / w_width;
-            const float corner_y = (t_offY + t_height / 2) * t_size / w_height;
+            const int ts = t_size;
+            const float corner_x = (t_offX + t_width / 2) * ts / w_width;
+            const float corner_y = (t_offY + t_height / 2) * ts / w_height;
 
             SDL_GetWindowSize (window, &w_width, &w_height);
 
             // Adjust the center of the playing field.
-            t_offX = corner_x * w_width / t_size - t_width / 2;
-            t_offY = corner_y * w_height / t_size - t_height / 2;
+            t_offX = corner_x * w_width / ts - t_width / 2;
+            t_offY = corner_y * w_height / ts - t_height / 2;
 
             menu_update (w_width, w_height);
             dialog_update (w_width, w_height);

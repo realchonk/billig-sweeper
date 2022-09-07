@@ -24,8 +24,8 @@
 #include "util.h"
 #include "bsw.h"
 
-float t_offX, t_offY;
-int w_width, w_height, t_size;
+float t_offX, t_offY, t_size;
+int w_width, w_height;
 bool shift_pressed = false;
 
 bool
@@ -208,7 +208,8 @@ draw_text (int idx)
 void
 render_tiles (void)
 {
-    const int ox = t_offX * t_size, oy = t_offY * t_size;
+    const int ts = t_size;
+    const int ox = t_offX * ts, oy = t_offY * ts;
     for (int y = 0; y < t_height; ++y) {
         for (int x = 0; x < t_width; ++x) {
             struct tile *t;
@@ -217,10 +218,10 @@ render_tiles (void)
             t = get_tile (x, y);
             assert (t != NULL);
 
-            rect.x = ox + (x * t_size);
-            rect.y = oy + (y * t_size);
-            rect.w = t_size;
-            rect.h = t_size;
+            rect.x = ox + (x * ts);
+            rect.y = oy + (y * ts);
+            rect.w = ts;
+            rect.h = ts;
 
             tile_draw (t, &rect);
         }
