@@ -245,9 +245,21 @@ render (void)
     SDL_RenderPresent (renderer);
 }
 
-static void
+static bool
 click (SDL_Point p, int button)
 {
+    if (dialog_is_open)
+        return dialog_click (p, button);
+
+    if (menu.shown)
+        return menu_click (p, button);
+
+    if (game_over) {
+        reset_game ();
+        render ();
+        return true;
+    }
+
     const int tx = (p.x - t_offX * t_size) / t_size;
     const int ty = (p.y - t_offY * t_size) / t_size;
 
@@ -258,7 +270,10 @@ click (SDL_Point p, int button)
 
     if (t) {
         tile_click (t, button);
+        return true;
     }
+
+    return true;
 }
 
 static void
@@ -335,26 +350,8 @@ handle_event (const SDL_Event *e)
         break;
     case SDL_MOUSEBUTTONUP: {
         const SDL_Point p = { e->button.x, e->button.y };
-        const int button = e->button.button;
 
-        if (dialog_is_open) {
-            dialog_click (p, button);
-            break;
-        }
-        if (menu.shown) {
-            if (!menu_click (p, button))
-                return false;
-            break;
-        }
-
-        if (game_over) {
-            reset_game ();
-            render ();
-            break;
-        }
-
-        click (p, button);
-        break;
+        return click (p, e->button.button);
     }
     case SDL_MOUSEMOTION: {
         const int dx = e->motion.xrel;

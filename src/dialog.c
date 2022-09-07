@@ -46,7 +46,7 @@ dialog_update (int ww, int wh)
     rect.x = (ww - rect.w) / 2;
     rect.y = (wh - rect.h) / 2;
 }
-void
+bool
 dialog_click (SDL_Point p, int button)
 {
     switch (button) {
@@ -58,4 +58,5 @@ dialog_click (SDL_Point p, int button)
         open_url (GITHUB_URL);
         break;
     }
+    return true;
 }
