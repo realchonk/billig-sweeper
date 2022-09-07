@@ -43,7 +43,7 @@ video_init ()
 
 
     // Initialize SDL2 & SDL2_image.
-    if (SDL_Init (SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_HAPTIC) != 0) {
         printf ("Failed to initialize SDL2: %s\n", SDL_GetError ());
         return false;
     }
@@ -77,8 +77,10 @@ video_init ()
         return false;
     }
 
+    // Create a haptic device.
     haptic = SDL_HapticOpen (0);
     if (haptic) {
+        puts ("Detected a haptic device.");
         SDL_HapticRumbleInit (haptic);
     }
 
