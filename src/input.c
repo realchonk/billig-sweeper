@@ -175,7 +175,7 @@ handle_event (const SDL_Event *e)
 
     // Mouse-related
     case SDL_MOUSEBUTTONUP: {
-        if (e->button.which == SDL_TOUCH_MOUSEID)
+        if (e->button.which == SDL_TOUCH_MOUSEID || e->button.button == SDL_BUTTON_MIDDLE)
             break;
         const SDL_Point p = { e->button.x, e->button.y };
         return click (p, e->button.button);
