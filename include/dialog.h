@@ -24,6 +24,6 @@ extern bool dialog_is_open;
 void dialog_init (void);
 void dialog_draw (void);
 void dialog_update (int ww, int wh);
-void dialog_handle_event (const SDL_Event *);
+void dialog_click (SDL_Point p, int button);
 
 #endif // FILE_BSW_DIALOG_H

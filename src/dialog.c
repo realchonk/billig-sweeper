@@ -47,16 +47,15 @@ dialog_update (int ww, int wh)
     rect.y = (wh - rect.h) / 2;
 }
 void
-dialog_handle_event (const SDL_Event *e)
+dialog_click (SDL_Point p, int button)
 {
-    switch (e->type) {
-    case SDL_MOUSEBUTTONUP:
-        if (e->button.button == SDL_BUTTON_LEFT) {
-            dialog_is_open = false;
-            render ();
-        } else if (e->button.button == SDL_BUTTON_RIGHT) {
-            open_url (GITHUB_URL);
-        }
+    switch (button) {
+    case SDL_BUTTON_LEFT:
+        dialog_is_open = false;
+        render ();
+        break;
+    case SDL_BUTTON_RIGHT:
+        open_url (GITHUB_URL);
         break;
     }
 }

@@ -246,10 +246,10 @@ render (void)
 }
 
 static void
-click (int ax, int ay, int button)
+click (SDL_Point p, int button)
 {
-    const int tx = (ax - t_offX * t_size) / t_size;
-    const int ty = (ay - t_offY * t_size) / t_size;
+    const int tx = (p.x - t_offX * t_size) / t_size;
+    const int ty = (p.y - t_offY * t_size) / t_size;
 
     if (!generated)
         generate_tiles (tx, ty);
@@ -298,10 +298,6 @@ handle_event (const SDL_Event *e)
         case SDLK_SPACE:
             space_pressed = true;
             break;
-        default:
-            if (menu.shown && !menu_handle_event (e))
-                return false;
-            break;
         }
         break;
     case SDL_KEYUP:
@@ -335,19 +331,18 @@ handle_event (const SDL_Event *e)
         case SDLK_SPACE:
             space_pressed = false;
             break;
-        default:
-            if (menu.shown && !menu_handle_event (e))
-                return false;
-            break;
         }
         break;
     case SDL_MOUSEBUTTONUP: {
+        const SDL_Point p = { e->button.x, e->button.y };
+        const int button = e->button.button;
+
         if (dialog_is_open) {
-            dialog_handle_event (e);
+            dialog_click (p, button);
             break;
         }
         if (menu.shown) {
-            if (!menu_handle_event (e))
+            if (!menu_click (p, button))
                 return false;
             break;
         }
@@ -358,7 +353,7 @@ handle_event (const SDL_Event *e)
             break;
         }
 
-        click (e->button.x, e->button.y, e->button.button);
+        click (p, button);
         break;
     }
     case SDL_MOUSEMOTION: {

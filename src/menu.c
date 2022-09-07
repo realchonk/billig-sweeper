@@ -291,24 +291,16 @@ menu_draw (void)
         draw_button (&menu.buttons[i]);
 }
 bool
-menu_handle_event (const SDL_Event *e)
+menu_click (SDL_Point p, int button)
 {
-    switch (e->type) {
-    case SDL_MOUSEBUTTONUP: {
-        SDL_Point p;
-        p.x = e->button.x;
-        p.y = e->button.y;
-        for (size_t i = 0; i < N_BUTTONS; ++i) {
-            struct menu_button *btn = &menu.buttons[i];
-            if (SDL_PointInRect (&p, &btn->wrect)) {
-                const bool v = btn->on_click (btn);
-                render ();
-                return v;
-            }
-        }
-        break;
-    }
-    }
+    (void)button;
 
-    return true;
+    for (size_t i = 0; i < N_BUTTONS; ++i) {
+        struct menu_button *btn = &menu.buttons[i];
+        if (SDL_PointInRect (&p, &btn->wrect)) {
+            const bool v = btn->on_click (btn);
+            render ();
+            return v;
+        }
+    }
 }
