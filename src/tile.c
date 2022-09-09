@@ -231,3 +231,4 @@ tile_draw (const struct tile *t, const SDL_Rect *rect)
     // Render actual tile.
     SDL_RenderCopy (renderer, sprite, &srect, rect);
 }
+
